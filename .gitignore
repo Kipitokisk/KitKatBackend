@@ -5,6 +5,8 @@
 *.log
 
 .idea
+target
+
 # BlueJ files
 *.ctxt
 
@@ -24,4 +26,4 @@
 hs_err_pid*
 replay_pid*
 
-.target
+
