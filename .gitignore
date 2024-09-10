@@ -6,6 +6,7 @@
 
 .idea
 target
+.env
 
 # BlueJ files
 *.ctxt
