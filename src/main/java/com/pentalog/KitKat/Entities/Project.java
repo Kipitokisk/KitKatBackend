@@ -13,19 +13,21 @@ public class Project {
     @Column
     private String projectName;
     @OneToOne()
-    @JoinColumn(name = "manager_profile_info_id")
-    private ManagerProfileInfo managerProfileInfo;
+    @JoinColumn(name = "user_id")
+    private User manager;
     @Column
     private LocalDateTime startDate;
+    @Column
+    private LocalDateTime finishDate;
     @Column
     private Boolean status;
 
     public Project() {
     }
 
-    public Project(String projectName, ManagerProfileInfo managerProfileInfo, LocalDateTime startDate, Boolean status) {
+    public Project(String projectName, User manager, LocalDateTime startDate, Boolean status) {
         this.projectName = projectName;
-        this.managerProfileInfo = managerProfileInfo;
+        this.manager = manager;
         this.startDate = startDate;
         this.status = status;
     }
@@ -46,12 +48,12 @@ public class Project {
         this.projectName = projectName;
     }
 
-    public ManagerProfileInfo getManagerProfileInfo() {
-        return managerProfileInfo;
+    public User getManager() {
+        return manager;
     }
 
-    public void setManagerProfileInfo(ManagerProfileInfo managerProfileInfo) {
-        this.managerProfileInfo = managerProfileInfo;
+    public void setManager(User manager) {
+        this.manager = manager;
     }
 
     public LocalDateTime getStartDate() {
@@ -70,13 +72,22 @@ public class Project {
         this.status = status;
     }
 
+    public LocalDateTime getFinishDate() {
+        return finishDate;
+    }
+
+    public void setFinishDate(LocalDateTime finishDate) {
+        this.finishDate = finishDate;
+    }
+
     @Override
     public String toString() {
         return "Project{" +
                 "projectId=" + projectId +
                 ", projectName='" + projectName + '\'' +
-                ", managerProfileInfo=" + managerProfileInfo +
+                ", manager=" + manager +
                 ", startDate=" + startDate +
+                ", finishDate=" + finishDate +
                 ", status=" + status +
                 '}';
     }
