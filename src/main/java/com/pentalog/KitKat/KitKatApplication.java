@@ -8,8 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class KitKatApplication {
 
 	public static void main(String[] args) {
-		Dotenv dotenv = Dotenv.load();
-		String hashKey = dotenv.get("HASH_KEY");
+		//Dotenv dotenv = Dotenv.load();
+		//String hashKey = dotenv.get("HASH_KEY");
 		SpringApplication.run(KitKatApplication.class, args);
 	}
 

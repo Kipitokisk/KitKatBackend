@@ -1,16 +1,18 @@
 package com.pentalog.KitKat.Entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
+import java.util.Arrays;
 import java.util.BitSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "t_worker_profiles_info")
-public class WorkerProfileInfo {
+@Table(name = "t_users")
+public class User {
     @Id
-    @GeneratedValue
-    private Integer profileInfoId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer userId;
     @Column
     private BitSet avatar;
     @Column
@@ -20,71 +22,58 @@ public class WorkerProfileInfo {
     @Column(unique = true)
     private String email;
     @Column
-    private String position;
-    @Column
-    private String seniority;
+    private BitSet password;
+    @OneToOne
+    @JoinColumn(name = "position_id")
+    private Position position;
+    @OneToOne
+    @JoinColumn(name = "seniority_id")
+    private Seniority seniority;
     @Column
     private String country;
     @Column
     private String city;
-    @ManyToOne()
-    @JoinColumn(name = "manager_id")
-    @JsonBackReference
-    private ManagerProfileInfo manager;
     @Column
-    private String languages;
+    private String languagesId;
     @Column
     private BitSet cv;
     @OneToOne()
     @JoinColumn(name = "project_id")
     private Project project;
     @OneToOne()
-    @JoinColumn(name = "skill_info_id")
-    private SkillInfo skillInfo;
-    @Column
+    @JoinColumn(name = "skill_rating_id")
+    private SkillRating skillRating;
+    @OneToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+    @OneToOne
+    @JoinColumn(name = "status_id")
     private Status status;
 
-
-    public WorkerProfileInfo() {
+    public User() {
     }
 
-    public WorkerProfileInfo(BitSet avatar, String firstName, String lastName, String email, String position, String seniority, String country, String city, String languages, BitSet cv, SkillInfo skillInfo) {
+    public User(BitSet avatar, String firstName, String lastName, String email, BitSet password, Position position, Seniority seniority, String country, String city, String languagesId, BitSet cv, Role role) {
         this.avatar = avatar;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.password = password;
         this.position = position;
         this.seniority = seniority;
         this.country = country;
         this.city = city;
-        this.languages = languages;
+        this.languagesId = languagesId;
         this.cv = cv;
-        this.skillInfo = skillInfo;
-        this.status = Status.INACTIVE;
+        this.role = role;
     }
 
-    public SkillInfo getSkillInfo() {
-        return skillInfo;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setSkillInfo(SkillInfo skillInfo) {
-        this.skillInfo = skillInfo;
-    }
-
-    public Project getProjectId() {
-        return project;
-    }
-
-    public void setProjectId(Project project) {
-        this.project = project;
-    }
-
-    public Integer getProfileInfoId() {
-        return profileInfoId;
-    }
-
-    public void setProfileInfoId(Integer profileInfoId) {
-        this.profileInfoId = profileInfoId;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public BitSet getAvatar() {
@@ -119,19 +108,27 @@ public class WorkerProfileInfo {
         this.email = email;
     }
 
-    public String getPosition() {
+    public BitSet getPassword() {
+        return password;
+    }
+
+    public void setPassword(BitSet password) {
+        this.password = password;
+    }
+
+    public Position getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
+    public void setPosition(Position position) {
         this.position = position;
     }
 
-    public String getSeniority() {
+    public Seniority getSeniority() {
         return seniority;
     }
 
-    public void setSeniority(String seniority) {
+    public void setSeniority(Seniority seniority) {
         this.seniority = seniority;
     }
 
@@ -151,20 +148,12 @@ public class WorkerProfileInfo {
         this.city = city;
     }
 
-    public ManagerProfileInfo getManagerId() {
-        return manager;
+    public String getLanguagesId() {
+        return languagesId;
     }
 
-    public void setManagerId(ManagerProfileInfo manager) {
-        this.manager = manager;
-    }
-
-    public String getLanguages() {
-        return languages;
-    }
-
-    public void setLanguages(String languages) {
-        this.languages = languages;
+    public void setLanguagesId(String languagesId) {
+        this.languagesId = languagesId;
     }
 
     public BitSet getCv() {
@@ -175,6 +164,30 @@ public class WorkerProfileInfo {
         this.cv = cv;
     }
 
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public SkillRating getSkillRating() {
+        return skillRating;
+    }
+
+    public void setSkillInfo(SkillRating skillRating) {
+        this.skillRating = skillRating;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     public Status getStatus() {
         return status;
     }
@@ -183,23 +196,38 @@ public class WorkerProfileInfo {
         this.status = status;
     }
 
+    // Helper methods to convert the comma-separated string to a List of Integers
+    public List getLanguageIdList() {
+        return Arrays.stream(this.languagesId.split(","))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+    }
+
+    public void setLanguageIdList(List<Integer> languageIdList) {
+        this.languagesId = languageIdList.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+    }
+
     @Override
     public String toString() {
-        return "WorkerProfileInfo{" +
-                "profileInfoId=" + profileInfoId +
+        return "User{" +
+                "userId=" + userId +
                 ", avatar=" + avatar +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", position='" + position + '\'' +
-                ", seniority='" + seniority + '\'' +
+                ", password=" + password +
+                ", position=" + position +
+                ", seniority=" + seniority +
                 ", country='" + country + '\'' +
                 ", city='" + city + '\'' +
-                ", manager=" + manager +
-                ", languages='" + languages + '\'' +
-                ", cv=" + cv + '\'' +
-                ", project=" + project + '\'' +
-                ", skillInfo=" + skillInfo +
+                ", languagesId='" + languagesId + '\'' +
+                ", cv=" + cv +
+                ", project=" + project +
+                ", skillRating=" + skillRating +
+                ", role=" + role +
+                ", status=" + status +
                 '}';
     }
 }
