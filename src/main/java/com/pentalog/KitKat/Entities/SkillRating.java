@@ -1,5 +1,6 @@
 package com.pentalog.KitKat.Entities;
 
+import com.pentalog.KitKat.Entities.User.User;
 import jakarta.persistence.*;
 
 @Entity
