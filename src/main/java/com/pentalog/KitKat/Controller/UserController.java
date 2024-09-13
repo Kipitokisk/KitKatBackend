@@ -1,8 +1,8 @@
-package com.pentalog.KitKat.Controllers;
+package com.pentalog.KitKat.Controller;
 
-import com.pentalog.KitKat.DTOs.UserForRegistrationDTO;
+import com.pentalog.KitKat.DTO.UserForRegistrationDTO;
 import com.pentalog.KitKat.Entities.User;
-import com.pentalog.KitKat.Services.UserService;
+import com.pentalog.KitKat.Service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +23,7 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserForRegistrationDTO user) {

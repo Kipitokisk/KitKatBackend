@@ -1,4 +1,4 @@
-package com.pentalog.KitKat.DTOs;
+package com.pentalog.KitKat.DTO;
 
 public class UserForRegistrationDTO {
     private String email;

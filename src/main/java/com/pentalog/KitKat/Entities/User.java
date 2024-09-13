@@ -22,7 +22,7 @@ public class User {
     @Column(unique = true)
     private String email;
     @Column
-    private String password;
+    private BitSet password;
     @OneToOne
     @JoinColumn(name = "position_id")
     private Position position;
@@ -53,7 +53,7 @@ public class User {
     public User() {
     }
 
-    public User(BitSet avatar, String firstName, String lastName, String email, String password, Position position, Seniority seniority, String country, String city, String languagesId, BitSet cv, Role role) {
+    public User(BitSet avatar, String firstName, String lastName, String email, BitSet password, Position position, Seniority seniority, String country, String city, String languagesId, BitSet cv, Role role) {
         this.avatar = avatar;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -108,11 +108,11 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
+    public BitSet getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(BitSet password) {
         this.password = password;
     }
 
