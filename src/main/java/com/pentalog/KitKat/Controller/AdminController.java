@@ -1,14 +1,8 @@
 package com.pentalog.KitKat.Controller;
 
 import com.pentalog.KitKat.DTO.CityDTO;
-import com.pentalog.KitKat.Entities.City;
-import com.pentalog.KitKat.Entities.Country;
-import com.pentalog.KitKat.Entities.Position;
-import com.pentalog.KitKat.Entities.Role;
-import com.pentalog.KitKat.Service.CityService;
-import com.pentalog.KitKat.Service.CountryService;
-import com.pentalog.KitKat.Service.PositionService;
-import com.pentalog.KitKat.Service.RoleService;
+import com.pentalog.KitKat.Entities.*;
+import com.pentalog.KitKat.Service.*;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +13,14 @@ public class AdminController {
     private final CityService cityService;
     private final PositionService positionService;
     private final RoleService roleService;
+    private final StatusService statusService;
 
-    public AdminController(CountryService countryService, CityService cityService, PositionService positionService, RoleService roleService) {
+    public AdminController(CountryService countryService, CityService cityService, PositionService positionService, RoleService roleService, StatusService statusService) {
         this.countryService = countryService;
         this.cityService = cityService;
         this.positionService = positionService;
         this.roleService = roleService;
+        this.statusService = statusService;
     }
 
     @PostMapping("/save-country")
@@ -44,4 +40,6 @@ public class AdminController {
 
     @PostMapping("/save-role")
     public Role saveRole(@Valid @RequestBody Role role){return this.roleService.saveRole(role);}
+    @PostMapping("/add-status")
+    public Status addStatus(@Valid @RequestBody Status status){return this.statusService.saveStatus(status);}
 }
