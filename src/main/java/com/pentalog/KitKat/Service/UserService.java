@@ -36,21 +36,23 @@ public class UserService {
     }
 
     public User registerNewUserAccount(UserForRegistrationDTO userForRegistrationDTO) throws Exception {
+        // Check if a user with the provided email already exists
         if (userRepository.findByEmail(userForRegistrationDTO.getEmail()) != null) {
             throw new Exception("There is already an account with this email");
         }
 
+        // Create a new User object and set default fields
         User user = new User();
         user.setAvatar(null);
         user.setFirstName(null);
         user.setLastName(null);
         user.setEmail(userForRegistrationDTO.getEmail());
 
-        // Generate salt and hash password
-        byte[] passwordSalt = passwordHashing.generateSalt();
-        byte[] hashedPassword = passwordHashing.getPasswordHash(userForRegistrationDTO.getPassword(), passwordSalt);
+        // Hash password (using salt from the environment)
+        byte[] hashedPassword = passwordHashing.getPasswordHash(userForRegistrationDTO.getPassword());
         user.setPassword(BitSet.valueOf(hashedPassword)); // Store the hashed password
 
+        // Set other user properties
         user.setPosition(null);
         user.setSeniority(null);
         user.setCity(null);
@@ -61,6 +63,8 @@ public class UserService {
         user.setRole(null);
         user.setStatus(statusRepository.getReferenceById(2));
 
+        // Save the user and return the persisted entity
         return userRepository.save(user);
     }
+
 }

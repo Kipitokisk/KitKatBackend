@@ -49,7 +49,7 @@ public class User {
     @OneToOne
     @JoinColumn(name = "role_id")
     private Role role;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "status_id")
     private Status status;
     @ManyToOne

@@ -5,33 +5,31 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
 import java.util.Base64;
 
 @Component
 public class PasswordHashing {
-    public byte[] getPasswordHash(String password, byte[] passwordSalt) throws Exception {
-        // Retrieve password salt key from environment variable
-        String passwordKey = System.getenv("HASH_KEY");
-        if (passwordKey == null) {
-            throw new IllegalArgumentException("Environment variable PASSWORD_KEY not set");
-        }
 
-        // Combine password key from env with salt
-        String passwordSaltPlusString = passwordKey + Base64.getEncoder().encodeToString(passwordSalt);
+    private static final String HASH_ALGORITHM = "PBKDF2WithHmacSHA256";
+    private static final int HASH_ITERATIONS = 1000000;
+    private static final int HASH_LENGTH = 256;
+
+    // Retrieves the password hash using the password and salt from environment
+    public byte[] getPasswordHash(String password) throws Exception {
+        byte[] passwordSalt = getEnvPasswordSalt();
 
         // Derive the password hash using PBKDF2WithHmacSHA256
-        PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), passwordSaltPlusString.getBytes(StandardCharsets.US_ASCII), 1000000, 256);
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-
+        PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), passwordSalt, HASH_ITERATIONS, HASH_LENGTH);
+        SecretKeyFactory factory = SecretKeyFactory.getInstance(HASH_ALGORITHM);
         return factory.generateSecret(spec).getEncoded();
     }
 
-    // Helper method to generate a new random salt
-    public static byte[] generateSalt() throws Exception {
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[16];
-        random.nextBytes(salt);
-        return salt;
+    // Retrieves the password salt from environment variables
+    private byte[] getEnvPasswordSalt() {
+        String saltString = System.getenv("HASH_KEY");
+        if (saltString == null) {
+            throw new IllegalArgumentException("Environment variable HASH_SALT not set");
+        }
+        return Base64.getDecoder().decode(saltString);
     }
 }
