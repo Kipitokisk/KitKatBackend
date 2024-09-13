@@ -59,7 +59,7 @@ public class User {
     public User() {
     }
 
-    public User(BitSet avatar, String firstName, String lastName, String email, String password, Position position, Seniority seniority, City city, String languages, BitSet cv, Role role, User managerId) {
+    public User(BitSet avatar, String firstName, String lastName, String email, String password, Position position, Seniority seniority, City city, String languages, BitSet cv, Role role) {
         this.avatar = avatar;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -71,7 +71,6 @@ public class User {
         this.languages = languages;
         this.cv = cv;
         this.role = role;
-        this.managerId = managerId;
     }
 
     public Integer getUserId() {

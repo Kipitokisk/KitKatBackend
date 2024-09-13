@@ -8,7 +8,7 @@ public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cityId;
-    @Column
+    @Column(unique = true)
     private String cityName;
     @ManyToOne
     @JoinColumn(name = "country_id")

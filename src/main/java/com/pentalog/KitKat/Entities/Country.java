@@ -8,7 +8,7 @@ public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer countryId;
-    @Column
+    @Column(unique = true)
     private String countryName;
 
     public Country() {

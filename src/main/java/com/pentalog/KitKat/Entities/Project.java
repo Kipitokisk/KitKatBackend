@@ -11,7 +11,7 @@ public class Project {
     @Id
     @GeneratedValue
     private Integer projectId;
-    @Column
+    @Column(unique = true)
     private String projectName;
     @OneToOne()
     @JoinColumn(name = "user_id")

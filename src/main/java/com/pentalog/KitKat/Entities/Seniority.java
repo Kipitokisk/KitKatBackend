@@ -8,7 +8,7 @@ public class Seniority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer seniortyId;
-    @Column
+    @Column(unique = true)
     private String name;
 
     public Seniority() {
