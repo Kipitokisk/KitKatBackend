@@ -1,5 +1,6 @@
 package com.pentalog.KitKat.Entities;
 
+import com.pentalog.KitKat.Entities.User.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -10,7 +11,7 @@ public class Project {
     @Id
     @GeneratedValue
     private Integer projectId;
-    @Column
+    @Column(unique = true)
     private String projectName;
     @OneToOne()
     @JoinColumn(name = "user_id")

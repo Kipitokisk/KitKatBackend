@@ -8,7 +8,7 @@ public class Position {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer positionId;
-    @Column
+    @Column(unique = true)
     private String name;
 
     public Position() {

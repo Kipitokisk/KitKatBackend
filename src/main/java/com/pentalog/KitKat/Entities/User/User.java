@@ -1,7 +1,10 @@
-package com.pentalog.KitKat.Entities;
+package com.pentalog.KitKat.Entities.User;
 
+import com.pentalog.KitKat.Entities.*;
 import jakarta.persistence.*;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
@@ -19,6 +22,7 @@ public class User {
     private String firstName;
     @Column
     private String lastName;
+    @NotNull
     @Column(unique = true)
     private String email;
     @Column
@@ -29,12 +33,11 @@ public class User {
     @OneToOne
     @JoinColumn(name = "seniority_id")
     private Seniority seniority;
+    @ManyToOne
+    @JoinColumn(name = "city_id")
+    private City city;
     @Column
-    private String country;
-    @Column
-    private String city;
-    @Column
-    private String languagesId;
+    private String languages;
     @Column
     private BitSet cv;
     @OneToOne()
@@ -46,14 +49,17 @@ public class User {
     @OneToOne
     @JoinColumn(name = "role_id")
     private Role role;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "status_id")
     private Status status;
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
+    private User managerId;
 
     public User() {
     }
 
-    public User(BitSet avatar, String firstName, String lastName, String email, BitSet password, Position position, Seniority seniority, String country, String city, String languagesId, BitSet cv, Role role) {
+    public User(BitSet avatar, String firstName, String lastName, String email, BitSet password, Position position, Seniority seniority, City city, String languages, BitSet cv, Role role) {
         this.avatar = avatar;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -61,9 +67,8 @@ public class User {
         this.password = password;
         this.position = position;
         this.seniority = seniority;
-        this.country = country;
         this.city = city;
-        this.languagesId = languagesId;
+        this.languages = languages;
         this.cv = cv;
         this.role = role;
     }
@@ -132,28 +137,20 @@ public class User {
         this.seniority = seniority;
     }
 
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
-    public String getLanguagesId() {
-        return languagesId;
+    public String getLanguages() {
+        return languages;
     }
 
-    public void setLanguagesId(String languagesId) {
-        this.languagesId = languagesId;
+    public void setLanguages(String languages) {
+        this.languages = languages;
     }
 
     public BitSet getCv() {
@@ -196,15 +193,29 @@ public class User {
         this.status = status;
     }
 
+    public void setSkillRating(SkillRating skillRating) {
+        this.skillRating = skillRating;
+    }
+
+    public User getManagerId() {
+        return managerId;
+    }
+
+    public void setManagerId(User managerId) {
+        this.managerId = managerId;
+    }
+
     // Helper methods to convert the comma-separated string to a List of Integers
-    public List getLanguageIdList() {
-        return Arrays.stream(this.languagesId.split(","))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+    public List<Integer> getLanguageIdList() {
+        if (this.languages != null && !this.languages.isEmpty()) {
+            return Arrays.stream(this.languages.split(","))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+        } else return new ArrayList<>();
     }
 
     public void setLanguageIdList(List<Integer> languageIdList) {
-        this.languagesId = languageIdList.stream()
+        this.languages = languageIdList.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
     }
@@ -220,14 +231,14 @@ public class User {
                 ", password=" + password +
                 ", position=" + position +
                 ", seniority=" + seniority +
-                ", country='" + country + '\'' +
-                ", city='" + city + '\'' +
-                ", languagesId='" + languagesId + '\'' +
+                ", city=" + city +
+                ", languages='" + languages + '\'' +
                 ", cv=" + cv +
                 ", project=" + project +
                 ", skillRating=" + skillRating +
                 ", role=" + role +
                 ", status=" + status +
+                ", managerId=" + managerId +
                 '}';
     }
 }
