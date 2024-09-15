@@ -1,6 +1,7 @@
 package com.pentalog.KitKat.Controller;
 
 import com.pentalog.KitKat.DTO.LoginDTO;
+import com.pentalog.KitKat.Entities.User.JwtResponse;
 import com.pentalog.KitKat.Entities.User.JwtTokenUtil;
 import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Service.PasswordHashing;
@@ -50,7 +51,7 @@ public class AuthenticationController {
             String jwt = jwtTokenUtil.generateToken(issuer);
 
             // Return success response with JWT token
-            return ResponseEntity.ok("Bearer " + jwt);
+            return ResponseEntity.ok(new JwtResponse(jwt));
 
         } catch (Exception e) {
             // Catch any unexpected exceptions and return internal server error response
