@@ -38,7 +38,7 @@ public class UserService {
 
     public User registerNewUserAccount(UserForRegistrationDTO userForRegistrationDTO) throws Exception {
         // Check if a user with the provided email already exists
-        if (userRepository.findByEmail(userForRegistrationDTO.getEmail()) != null) {
+        if (userRepository.findUserByEmail(userForRegistrationDTO.getEmail()) != null) {
             throw new Exception("There is already an account with this email");
         }
 
