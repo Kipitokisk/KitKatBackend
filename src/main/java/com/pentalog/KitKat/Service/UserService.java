@@ -30,7 +30,8 @@ public class UserService {
         log.info("User with id: {} saved successfully", savedUser.getUserId());
         return savedUser;
     }
-    public User findByEmail(String email) {return userRepository.findByEmail(email);}
+    public User findUserById(Integer id) {return userRepository.findUserById(id);}
+    public User findUserByEmail(String email) {return userRepository.findUserByEmail(email);}
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
