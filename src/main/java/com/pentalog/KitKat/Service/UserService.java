@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.BitSet;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -30,7 +31,7 @@ public class UserService {
         log.info("User with id: {} saved successfully", savedUser.getUserId());
         return savedUser;
     }
-    public User findUserById(Integer id) {return userRepository.findUserById(id);}
+    public Optional<User> findUserById(Integer id) {return userRepository.findById(id);}
     public User findUserByEmail(String email) {return userRepository.findUserByEmail(email);}
     public List<User> getAllUsers() {
         return userRepository.findAll();
