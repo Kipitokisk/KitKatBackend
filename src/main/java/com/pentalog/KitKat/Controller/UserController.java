@@ -65,39 +65,19 @@ public class UserController {
 //    }
 
     @GetMapping("/{user_email}")
-    public User findUserByEmail(@PathVariable("user_email") String email) {
+    public ResponseEntity<?> findUserByEmail(@PathVariable("user_email") String email) {
         log.info("Received request to find user by email: {}", email);
 
         User user = userService.findUserByEmail(email);
 
         if (user == null) {
             log.warn("No user found with email: {}", email);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("User with email '" + email + "' not found.");
         } else {
             log.info("User found with email: {}", email);
-        }
-
-        return user;
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody UserForRegistrationDTO user) {
-        log.debug("Registering user account with information: {}", user);
-
-        try {
-            // Register the new user account and return a success message
-            User savedUser = userService.registerNewUserAccount(user);
-            log.info("User registered successfully: {}", savedUser.getEmail());
-
-            // You can return a custom success message or the user object
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("User registered successfully");
-        } catch (Exception RegFailed) {
-            log.error("User registration failed: {}", RegFailed.getMessage());
-
-            // Return a 409 Conflict status if the user already exists
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("User already exists");
-
+            return ResponseEntity.ok(user);
         }
     }
+
 }

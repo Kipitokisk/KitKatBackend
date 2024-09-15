@@ -4,6 +4,8 @@ import com.pentalog.KitKat.Entities.Position;
 import com.pentalog.KitKat.Repository.PositionRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class PositionService {
     private final PositionRepository positionRepository;
@@ -15,4 +17,5 @@ public class PositionService {
     public Position savePosition(Position position) {
         return positionRepository.save(position);
     }
+    public Optional<Position> findByName(String name) {return positionRepository.findByName(name);}
 }

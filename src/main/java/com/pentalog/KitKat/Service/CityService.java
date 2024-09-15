@@ -7,6 +7,8 @@ import com.pentalog.KitKat.Repository.CityRepository;
 import com.pentalog.KitKat.Repository.CountryRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CityService {
     private final CityRepository cityRepository;
@@ -26,4 +28,6 @@ public class CityService {
 
         return cityRepository.save(city);
     }
+
+    public Optional<City> findByName(String name) {return cityRepository.findByCityName(name);}
 }
