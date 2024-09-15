@@ -31,7 +31,7 @@ public class AuthenticationController {
     public ResponseEntity<?> login(@RequestBody LoginDTO body, HttpServletResponse response) {
         try {
             // Find user by email
-            User user = userService.findByEmail(body.getEmail());
+            User user = userService.findUserByEmail(body.getEmail());
             if (user == null) {
                 return ResponseEntity.badRequest().body("User not found");
             }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.BitSet;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -30,14 +31,15 @@ public class UserService {
         log.info("User with id: {} saved successfully", savedUser.getUserId());
         return savedUser;
     }
-    public User findByEmail(String email) {return userRepository.findByEmail(email);}
+    public Optional<User> findUserById(Integer id) {return userRepository.findById(id);}
+    public User findUserByEmail(String email) {return userRepository.findUserByEmail(email);}
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     public User registerNewUserAccount(UserForRegistrationDTO userForRegistrationDTO) throws Exception {
         // Check if a user with the provided email already exists
-        if (userRepository.findByEmail(userForRegistrationDTO.getEmail()) != null) {
+        if (userRepository.findUserByEmail(userForRegistrationDTO.getEmail()) != null) {
             throw new Exception("There is already an account with this email");
         }
 
