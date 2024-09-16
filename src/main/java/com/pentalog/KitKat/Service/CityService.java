@@ -29,6 +29,7 @@ public class CityService {
             // Check if the country exists
             Optional<Country> country = Optional.ofNullable(countryRepository.findByCountryName(cityDTO.getCountryName()));
             if (!country.isPresent()) {
+                log.warn("Country does not exist: {}", cityDTO.getCountryName());
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("Country with ID '" + countryRepository.findByCountryName(cityDTO.getCountryName())+ "' does not exist.");
             }
@@ -36,6 +37,7 @@ public class CityService {
             // Check if the city already exists
             Optional<City> existingCity = cityRepository.findByCityName(cityDTO.getCityName());
             if (existingCity.isPresent()) {
+                log.warn("City already exists: {}", cityDTO.getCityName());
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body("City '" + cityDTO.getCityName() + "' already exists.");
             }
@@ -45,7 +47,7 @@ public class CityService {
             savedCity.setCityName(cityDTO.getCityName());
             savedCity.setCountry(countryRepository.findByCountryName(cityDTO.getCountryName()));
             this.cityRepository.save(savedCity);
-
+            log.info("City added: {}", cityDTO.getCityName());
             return ResponseEntity.ok(savedCity);
 
         } catch (Exception e) {

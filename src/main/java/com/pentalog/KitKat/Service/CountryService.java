@@ -23,12 +23,14 @@ public class CountryService {
             // Check if the country already exists
             Optional<Country> existingCountry = Optional.ofNullable(this.countryRepository.findByCountryName(country.getCountryName()));
             if (existingCountry.isPresent()) {
+                log.warn("Country already exists: {}", country.getCountryName());
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body("Country '" + country.getCountryName() + "' already exists.");
             }
 
             // If the country doesn't exist, save the new country
             Country savedCountry = this.countryRepository.save(country);
+            log.info("Country added: {}", country.getCountryName());
             return ResponseEntity.ok(savedCountry);
 
         } catch (Exception e) {

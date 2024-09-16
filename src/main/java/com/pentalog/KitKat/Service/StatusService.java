@@ -23,12 +23,14 @@ public class StatusService {
             // Check if the status already exists
             Optional<Status> existingStatus = this.statusRepository.findByName(status.getName());
             if (existingStatus.isPresent()) {
+                log.warn("Status already exists: {}", status.getName());
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body("Status '" + status.getName() + "' already exists.");
             }
 
             // If status doesn't exist, save the new status
             Status savedStatus = this.statusRepository.save(status);
+            log.info("Status added: {}", status.getName());
             return ResponseEntity.ok(savedStatus);
 
         } catch (Exception e) {

@@ -23,12 +23,14 @@ public class RoleService {
             // Check if the role already exists
             Optional<Role> existingRole = this.roleRepository.findByName(role.getName());
             if (existingRole.isPresent()) {
+                log.warn("Role already exists: {}", role.getName());
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body("Role '" + role.getName() + "' already exists.");
             }
 
             // If the role doesn't exist, save the new role
             Role savedRole = this.roleRepository.save(role);
+            log.info("Role added: {}", role.getName());
             return ResponseEntity.ok(savedRole);
 
         } catch (Exception e) {

@@ -23,12 +23,14 @@ public class PositionService {
             // Check if the position already exists
             Optional<Position> existingPosition = this.positionRepository.findByName(position.getName());
             if (existingPosition.isPresent()) {
+                log.warn("Position already exists: {}", position.getName());
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body("Position '" + position.getName() + "' already exists.");
             }
 
             // If the position doesn't exist, save the new position
             Position savedPosition = this.positionRepository.save(position);
+            log.info("Position added: {}", position.getName());
             return ResponseEntity.ok(savedPosition);
 
         } catch (Exception e) {
