@@ -1,4 +1,4 @@
-package com.pentalog.KitKat.Controller;
+package com.pentalog.KitKat.Controller.AdminController;
 
 import com.pentalog.KitKat.DTO.CityDTO;
 import com.pentalog.KitKat.Entities.*;

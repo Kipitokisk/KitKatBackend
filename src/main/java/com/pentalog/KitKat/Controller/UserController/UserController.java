@@ -1,4 +1,4 @@
-package com.pentalog.KitKat.Controller;
+package com.pentalog.KitKat.Controller.UserController;
 
 import com.pentalog.KitKat.DTO.UserDTO;
 import com.pentalog.KitKat.DTO.UserForRegistrationDTO;
