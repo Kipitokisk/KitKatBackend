@@ -1,18 +1,19 @@
 package com.pentalog.KitKat.Controller;
 
+import com.pentalog.KitKat.DTO.ResetPasswordDTO;
 import com.pentalog.KitKat.DTO.UserDTO;
-import com.pentalog.KitKat.DTO.UserForRegistrationDTO;
 import com.pentalog.KitKat.Entities.User.User;
+import com.pentalog.KitKat.Service.ResetPasswordService;
 import com.pentalog.KitKat.Service.PasswordHashing;
 import com.pentalog.KitKat.Service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.BitSet;
-import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -20,6 +21,8 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
     private final PasswordHashing passwordHashing;
+    @Autowired
+    private ResetPasswordService resetPasswordService;
 
     public UserController(UserService userService, PasswordHashing passwordHashing) {
         this.userService = userService;
@@ -79,5 +82,12 @@ public class UserController {
             return ResponseEntity.ok(user);
         }
     }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> testEmail(@Valid @RequestBody ResetPasswordDTO resetPasswordDTO) throws Exception {
+        resetPasswordService.sendPassword(resetPasswordDTO.getEmail());
+        return ResponseEntity.ok("New password sent.");
+    }
+
 
 }
