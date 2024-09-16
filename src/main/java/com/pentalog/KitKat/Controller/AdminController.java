@@ -4,9 +4,15 @@ import com.pentalog.KitKat.DTO.CityDTO;
 import com.pentalog.KitKat.Entities.*;
 import com.pentalog.KitKat.Service.*;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
+@Slf4j
 @RequestMapping("/admin")
 public class AdminController {
     private final CountryService countryService;
@@ -24,22 +30,27 @@ public class AdminController {
     }
 
     @PostMapping("/save-country")
-    public Country saveCountry(@Valid @RequestBody Country country) {
-        return this.countryService.saveCountry(country);
+    public ResponseEntity<?> saveCountry(@Valid @RequestBody Country country) {
+        return countryService.saveCountry(country);
     }
 
     @PostMapping("/save-city")
-    public City saveCity(@Valid @RequestBody CityDTO city) {
-        return this.cityService.saveCity(city);
+    public ResponseEntity<?> saveCity(@Valid @RequestBody CityDTO cityDTO) {
+        return cityService.saveCity(cityDTO);
     }
 
+
     @PostMapping("/save-position")
-    public Position savePosition(@Valid @RequestBody Position position) {
-        return this.positionService.savePosition(position);
+    public ResponseEntity<?> savePosition(@Valid @RequestBody Position position) {
+        return positionService.savePosition(position);
     }
 
     @PostMapping("/save-role")
-    public Role saveRole(@Valid @RequestBody Role role){return this.roleService.saveRole(role);}
+    public ResponseEntity<?> saveRole(@Valid @RequestBody Role role) {
+        return roleService.saveRole(role);
+    }
     @PostMapping("/add-status")
-    public Status addStatus(@Valid @RequestBody Status status){return this.statusService.saveStatus(status);}
+    public ResponseEntity<?> addStatus(@Valid @RequestBody Status status) {
+        return statusService.saveStatus(status);
+    }
 }
