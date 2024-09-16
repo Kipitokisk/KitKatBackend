@@ -35,29 +35,42 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO body, HttpServletResponse response) {
+        log.debug("Login attempt initiated for email: {}", body.getEmail());
         try {
+
             // Find user by email
+            log.debug("Searching for user by email: {}", body.getEmail());
             User user = userService.findUserByEmail(body.getEmail());
             if (user == null) {
+                log.warn("User not found for email: {}", body.getEmail());
                 Map<String, String> errorResponse = new HashMap<>();
                 errorResponse.put("error", "User not found");
                 return ResponseEntity.badRequest().body(errorResponse);
             }
 
+            log.debug("User found for email: {}", body.getEmail());
+
             // Hash the provided password using the stored salt from the environment
+            log.debug("Hashing the provided password for email: {}", body.getEmail());
             byte[] hashedPassword = passwordHashing.getPasswordHash(body.getPassword());
             byte[] userPassword = user.getPassword().toByteArray();
 
             // Compare the stored password with the hashed password
             if (!Arrays.equals(hashedPassword, userPassword)) {
+                log.warn("Password mismatch for user with email: {}", body.getEmail());
                 Map<String, String> errorResponse = new HashMap<>();
                 errorResponse.put("error", "Incorrect password");
                 return ResponseEntity.badRequest().body(errorResponse);
             }
 
+            log.debug("Password verified for user with email: {}", body.getEmail());
+
             // Generate JWT token
+            log.debug("Generating JWT token for user with email: {}", body. getEmail());
             String issuer = user.getUserId().toString();
             String jwt = jwtTokenUtil.generateToken(issuer);
+
+            log.info("User logged succesfuly: {}", body.getEmail());
 
             // Create success response
             Map<String, Object> res = new HashMap<>();
@@ -65,11 +78,14 @@ public class AuthenticationController {
             res.put("email", user.getEmail());
             res.put("jwt", jwt);
 
+            log.debug("Login response created for user with email: {}", body.getEmail());
+
             // Return success response with user id, user email and JWT token
             return ResponseEntity.ok(res);
 
         } catch (Exception e) {
             // Catch any unexpected exceptions and return internal server error response
+            log.debug("User login failed: {}", e.getMessage());
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "An error occurred during login");
             errorResponse.put("message", e.getMessage());
