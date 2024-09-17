@@ -34,11 +34,11 @@ public class ResetPasswordService {
 
     @Transactional
     public void sendPassword(String email) throws Exception {
-        if (userRepository.findUserByEmail(email) == null) {
+        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
             log.error("There is no account with this email: " + email);
             throw new Exception("There is no account with this email");
         }
-        User user = userRepository.findUserByEmail(email);
         log.info("Generate password for user with email: " + email);
         String password = generatePassword();
         log.info("Send email to user: " + email);
