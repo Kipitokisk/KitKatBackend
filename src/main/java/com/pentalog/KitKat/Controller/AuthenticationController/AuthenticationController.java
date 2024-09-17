@@ -83,8 +83,8 @@ public class AuthenticationController {
             // Catch any unexpected exceptions and return internal server error response
             log.error("User login failed: {}", e.getMessage());
             Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "An error occurred during login");
-            errorResponse.put("message", e.getMessage());
+            errorResponse.put("message", "An error occurred during login");
+            errorResponse.put("error", e.getMessage());
             return ResponseEntity.status(500).body(errorResponse);
         }
     }
@@ -105,13 +105,13 @@ public class AuthenticationController {
             successResponse.put("email", savedUser.getEmail());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
-        } catch (Exception RegFailed) {
-            log.error("User registration failed: {}", RegFailed.getMessage());
+        } catch (Exception e) {
+            log.error("User registration failed: {}", e.getMessage());
 
             // Create a JSON response for failure
             Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "User registration failed");
-            errorResponse.put("message", RegFailed.getMessage());
+            errorResponse.put("message", "User registration failed");
+            errorResponse.put("error", e.getMessage());
 
             // Return a 409 Conflict status if the user already exists
             return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
