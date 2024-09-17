@@ -1,4 +1,4 @@
-package com.pentalog.KitKat.Controller;
+package com.pentalog.KitKat.Controller.UserController;
 
 import com.pentalog.KitKat.DTO.ResetPasswordDTO;
 import com.pentalog.KitKat.DTO.UserDTO;

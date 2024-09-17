@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -24,8 +26,10 @@ public class RoleService {
             Optional<Role> existingRole = this.roleRepository.findByName(role.getName());
             if (existingRole.isPresent()) {
                 log.warn("Role already exists: {}", role.getName());
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("message", "Role already exists");
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body("Role '" + role.getName() + "' already exists.");
+                        .body(errorResponse);
             }
 
             // If the role doesn't exist, save the new role
@@ -35,7 +39,10 @@ public class RoleService {
 
         } catch (Exception e) {
             log.error("Error while saving status", e);
-            return ResponseEntity.badRequest().body("Failed to save role: " + e.getMessage());
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "An error occurred during save role");
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 

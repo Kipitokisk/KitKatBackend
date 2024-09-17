@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -24,8 +26,10 @@ public class PositionService {
             Optional<Position> existingPosition = this.positionRepository.findByName(position.getName());
             if (existingPosition.isPresent()) {
                 log.warn("Position already exists: {}", position.getName());
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("message", "Position already exists");
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body("Position '" + position.getName() + "' already exists.");
+                        .body(errorResponse);
             }
 
             // If the position doesn't exist, save the new position
@@ -35,7 +39,10 @@ public class PositionService {
 
         } catch (Exception e) {
             log.error("Error while saving status", e);
-            return ResponseEntity.badRequest().body("Failed to save position: " + e.getMessage());
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "An error occurred during save position");
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
     public Optional<Position> findByName(String name) {return positionRepository.findByName(name);}
