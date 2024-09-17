@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Optional;
 
-import java.util.BitSet;
+import java.util.*;
+
 import java.util.Optional;
 
 @RestController
@@ -88,9 +88,27 @@ public class UserController {
 
     @PostMapping("/reset-password")
     public ResponseEntity<?> testEmail(@Valid @RequestBody ResetPasswordDTO resetPasswordDTO) throws Exception {
-        log.info("Received request to reset password for user with email: {}", resetPasswordDTO.getEmail());
-        resetPasswordService.sendPassword(resetPasswordDTO.getEmail());
-        return ResponseEntity.ok("New password sent.");
+        try {
+            log.debug("Searching for user by email: {}", resetPasswordDTO.getEmail());
+            User user = userService.findUserByEmail(resetPasswordDTO.getEmail());
+            if (user == null) {
+                log.warn("User not found for email: {}", resetPasswordDTO.getEmail());
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("message", "User not found");
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
+
+            log.info("Received request to reset password for user with email: {}", resetPasswordDTO.getEmail());
+            resetPasswordService.sendPassword(user);
+            return ResponseEntity.ok("New password sent.");
+        }
+        catch (Exception e){
+            log.error("Sending email failed {}", e.getMessage());
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "An error occurred during sending email");
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.status(500).body(errorResponse);
+        }
     }
 
 
