@@ -44,7 +44,7 @@ public class AuthenticationController {
             if (user == null) {
                 log.warn("User not found for email: {}", body.getEmail());
                 Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("error", "User not found");
+                errorResponse.put("message", "User not found");
                 return ResponseEntity.badRequest().body(errorResponse);
             }
 
@@ -58,7 +58,7 @@ public class AuthenticationController {
             if (!Arrays.equals(hashedPassword, userPassword)) {
                 log.warn("Password mismatch for user with email: {}", body.getEmail());
                 Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("error", "Incorrect password");
+                errorResponse.put("message", "Incorrect password");
                 return ResponseEntity.badRequest().body(errorResponse);
             }
 
