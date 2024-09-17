@@ -2,6 +2,7 @@ package com.pentalog.KitKat.Controller;
 
 import com.pentalog.KitKat.DTO.ResetPasswordDTO;
 import com.pentalog.KitKat.DTO.UserDTO;
+import com.pentalog.KitKat.DTO.UserForRegistrationDTO;
 import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Service.ResetPasswordService;
 import com.pentalog.KitKat.Service.PasswordHashing;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Optional;
 
 import java.util.BitSet;
 
