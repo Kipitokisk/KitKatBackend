@@ -21,12 +21,12 @@ import java.util.BitSet;
 public class UserController {
     private final UserService userService;
     private final PasswordHashing passwordHashing;
-    @Autowired
-    private ResetPasswordService resetPasswordService;
+    private final ResetPasswordService resetPasswordService;
 
-    public UserController(UserService userService, PasswordHashing passwordHashing) {
+    public UserController(UserService userService, PasswordHashing passwordHashing, ResetPasswordService resetPasswordService) {
         this.userService = userService;
         this.passwordHashing = passwordHashing;
+        this.resetPasswordService = resetPasswordService;
     }
 
     @PostMapping("/create")
@@ -85,6 +85,7 @@ public class UserController {
 
     @PostMapping("/reset-password")
     public ResponseEntity<?> testEmail(@Valid @RequestBody ResetPasswordDTO resetPasswordDTO) throws Exception {
+        log.info("Received request to reset password for user with email: {}", resetPasswordDTO.getEmail());
         resetPasswordService.sendPassword(resetPasswordDTO.getEmail());
         return ResponseEntity.ok("New password sent.");
     }

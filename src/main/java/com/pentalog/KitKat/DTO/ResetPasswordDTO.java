@@ -2,6 +2,9 @@ package com.pentalog.KitKat.DTO;
 
 public class ResetPasswordDTO {
     private String email;
+    // No-args constructor
+    public ResetPasswordDTO() {
+    }
 
     public ResetPasswordDTO(String email) {
         this.email = email;

@@ -15,40 +15,34 @@ import java.util.BitSet;
 @Slf4j
 @Service
 public class ResetPasswordService {
-
-    @Autowired
-    private JavaMailSender mailSender;
-    private PasswordGeneratorService passwordGeneratorService;
+;
+    private final EmailService emailService;
+    private final PasswordGeneratorService passwordGeneratorService;
     private final UserRepository userRepository;
     private final PasswordHashing passwordHashing;
 
-    public ResetPasswordService(UserRepository userRepository, PasswordHashing passwordHashing) {
+    public ResetPasswordService(EmailService emailService, UserRepository userRepository, PasswordHashing passwordHashing, PasswordGeneratorService passwordGeneratorService) {
+        this.emailService = emailService;
         this.userRepository = userRepository;
         this.passwordHashing = passwordHashing;
+        this.passwordGeneratorService = passwordGeneratorService;
     }
 
-
-    public void sendEmail(String to, String subject, String text) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
-        mailSender.send(message);
-    }
     public String generatePassword() {
-
         return passwordGeneratorService.generatePassword(8);
     }
 
     @Transactional
     public void sendPassword(String email) throws Exception {
         if (userRepository.findUserByEmail(email) == null) {
+            log.error("There is no account with this email: " + email);
             throw new Exception("There is no account with this email");
         }
         User user = userRepository.findUserByEmail(email);
         log.info("Generate password for user with email: " + email);
         String password = generatePassword();
-        sendEmail(email, "New password", "Here is the new password for account: " + password);
+        log.info("Send email to user: " + email);
+        emailService.sendEmail(email, "BenchHub: Password reset", "Hello " + email + ",\nYour password was reset. Here is a new password: " + password + "\n\nSincerely,\nBenchHUB team");
         byte[] hashedPassword = passwordHashing.getPasswordHash(password);
         user.setPassword(BitSet.valueOf(hashedPassword)); // Store the hashed password
         userRepository.save(user);

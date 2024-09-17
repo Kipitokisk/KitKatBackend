@@ -1,7 +1,10 @@
 package com.pentalog.KitKat.Service;
 
+import org.springframework.stereotype.Service;
+
 import java.security.SecureRandom;
 
+@Service
 public class PasswordGeneratorService {
     private static final String LOWER_CASE = "abcdefghijklmnopqrstuvwxyz";
     private static final String UPPER_CASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
