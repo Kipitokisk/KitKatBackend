@@ -33,19 +33,14 @@ public class ResetPasswordService {
     }
 
     @Transactional
-    public void sendPassword(String email) throws Exception {
-        User user = userRepository.findUserByEmail(email);
-        if (user == null) {
-            log.error("There is no account with this email: " + email);
-            throw new Exception("There is no account with this email");
-        }
-        log.info("Generate password for user with email: " + email);
+    public void sendPassword(User user) throws Exception {
+        log.info("Generate password for user with email: " + user.getEmail());
         String password = generatePassword();
-        log.info("Send email to user: " + email);
-        emailService.sendEmail(email, "BenchHub: Password reset", "Hello " + email + ",\nYour password was reset. Here is a new password: " + password + "\n\nSincerely,\nBenchHUB team");
+        log.info("Send email to user: " + user.getEmail());
+        emailService.sendEmail(user.getEmail(), "BenchHub: Password reset", "Hello " + user.getEmail() + ",\nYour password was reset. Here is a new password: " + password + "\n\nSincerely,\nBenchHUB team");
         byte[] hashedPassword = passwordHashing.getPasswordHash(password);
         user.setPassword(BitSet.valueOf(hashedPassword)); // Store the hashed password
         userRepository.save(user);
-        log.info("Save password for user with email: " + email);
+        log.info("Save password for user with email: " + user.getEmail());
     }
 }

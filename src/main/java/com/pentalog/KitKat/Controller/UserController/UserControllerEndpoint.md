@@ -114,3 +114,25 @@ Upon execution, this endpoint returns a JSON response with the following structu
     "languageIdList": []
 }
 ```
+
+#### _Reset user password_
+##### Description
+This endpoint send the user an email containing a new randomly generated password.
+##### Request Body
+* `email` is the user's account email.
+##### Request
+``` Curl
+curl --location 'http://localhost:8080/user/reset-password' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "email": "andrei.berco@isa.utm.md"
+}'
+```
+##### Response
+Upon execution, if it is a success this endpoint returns status 200 Ok.
+If execution failed (wrong email), it returns:
+```JSON
+{
+"message": "User not found"
+}
+```
