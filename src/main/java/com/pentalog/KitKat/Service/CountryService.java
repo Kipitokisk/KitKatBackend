@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -24,8 +26,10 @@ public class CountryService {
             Optional<Country> existingCountry = Optional.ofNullable(this.countryRepository.findByCountryName(country.getCountryName()));
             if (existingCountry.isPresent()) {
                 log.warn("Country already exists: {}", country.getCountryName());
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("message", "Country already exists");
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body("Country '" + country.getCountryName() + "' already exists.");
+                        .body(errorResponse);
             }
 
             // If the country doesn't exist, save the new country
@@ -35,7 +39,10 @@ public class CountryService {
 
         } catch (Exception e) {
             log.error("Error while saving status", e);
-            return ResponseEntity.badRequest().body("Failed to save country: " + e.getMessage());
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "An error occurred during save country");
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
     public Country findByName(String name) {return countryRepository.findByCountryName(name);}

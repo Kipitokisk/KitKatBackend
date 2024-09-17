@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -30,14 +32,18 @@ public class CityService {
             Optional<Country> country = Optional.ofNullable(countryRepository.findByCountryName(cityDTO.getCountryName()));
             if (!country.isPresent()) {
                 log.warn("Country does not exist: {}", cityDTO.getCountryName());
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("message", "Country does not exist");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Country with ID '" + countryRepository.findByCountryName(cityDTO.getCountryName())+ "' does not exist.");
+                        .body(errorResponse);
             }
 
             // Check if the city already exists
             Optional<City> existingCity = cityRepository.findByCityName(cityDTO.getCityName());
             if (existingCity.isPresent()) {
                 log.warn("City already exists: {}", cityDTO.getCityName());
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("message", "City already exists");
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body("City '" + cityDTO.getCityName() + "' already exists.");
             }
@@ -51,8 +57,11 @@ public class CityService {
             return ResponseEntity.ok(savedCity);
 
         } catch (Exception e) {
-            log.error("Error while saving status", e);
-            return ResponseEntity.badRequest().body("Failed to save city: " + e.getMessage());
+            log.error("Save city failed: {}", e.getMessage());
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "An error occurred during save city");
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
