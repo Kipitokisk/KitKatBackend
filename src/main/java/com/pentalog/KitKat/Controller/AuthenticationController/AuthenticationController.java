@@ -1,9 +1,11 @@
 package com.pentalog.KitKat.Controller.AuthenticationController;
 
 import com.pentalog.KitKat.DTO.LoginDTO;
+import com.pentalog.KitKat.DTO.LoginOtpDTO;
 import com.pentalog.KitKat.DTO.UserForRegistrationDTO;
 import com.pentalog.KitKat.Entities.User.JwtTokenUtil;
 import com.pentalog.KitKat.Entities.User.User;
+import com.pentalog.KitKat.Service.EmailVerificationService;
 import com.pentalog.KitKat.Service.PasswordHashing;
 import com.pentalog.KitKat.Service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,11 +28,13 @@ public class AuthenticationController {
     private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
     private final PasswordHashing passwordHashing;
+    private final EmailVerificationService emailVerificationService;
 
-    public AuthenticationController(UserService userService, JwtTokenUtil jwtTokenUtil, PasswordHashing passwordHashing) {
+    public AuthenticationController(UserService userService, JwtTokenUtil jwtTokenUtil, PasswordHashing passwordHashing, EmailVerificationService emailVerificationService) {
         this.userService = userService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.passwordHashing = passwordHashing;
+        this.emailVerificationService = emailVerificationService;
     }
 
     @PostMapping("/login")
@@ -64,6 +68,39 @@ public class AuthenticationController {
 
             log.debug("Password verified for user with email: {}", body.getEmail());
 
+            emailVerificationService.sendVerificationCode(body.getEmail());
+
+            return ResponseEntity.ok("Verification code sent successfully");
+
+//            // Generate JWT token
+//            String issuer = user.getUserId().toString();
+//            String jwt = jwtTokenUtil.generateToken(issuer);
+//
+//            // Create success response
+//            Map<String, Object> res = new HashMap<>();
+//            res.put("id", user.getUserId());
+//            res.put("email", user.getEmail());
+//            res.put("jwt", jwt);
+//
+//            log.info("User logged succesfuly: {}", body.getEmail());
+//
+//            // Return success response with user id, user email and JWT token
+//            return ResponseEntity.ok(res);
+
+        } catch (Exception e) {
+            // Catch any unexpected exceptions and return internal server error response
+            log.error("User login failed: {}", e.getMessage());
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "An error occurred during login");
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+
+    @PostMapping("/login-otp")
+    public ResponseEntity<?> loginOTP(@RequestBody LoginOtpDTO body, HttpServletResponse response) {
+        User user = userService.findUserByEmail(body.getEmail());
+        if(emailVerificationService.checkVerificationCode(body.getEmail(), body.getVerificationCode())){
             // Generate JWT token
             String issuer = user.getUserId().toString();
             String jwt = jwtTokenUtil.generateToken(issuer);
@@ -78,17 +115,16 @@ public class AuthenticationController {
 
             // Return success response with user id, user email and JWT token
             return ResponseEntity.ok(res);
-
-        } catch (Exception e) {
+        }
+        else {
             // Catch any unexpected exceptions and return internal server error response
-            log.error("User login failed: {}", e.getMessage());
+            log.error("User login failed");
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("message", "An error occurred during login");
-            errorResponse.put("error", e.getMessage());
+            errorResponse.put("error", "User login failed");
             return ResponseEntity.status(500).body(errorResponse);
         }
     }
-
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserForRegistrationDTO user) {
