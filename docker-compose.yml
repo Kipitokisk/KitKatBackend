@@ -1,5 +1,6 @@
 services:
   app:
+    container_name: backend
     image: 'kitkat-backend:latest'
     build:
       context: .
@@ -21,12 +22,13 @@ services:
       - "8080:8080"
 
   postgres:
-    container_name: kitkat-project-db
+    container_name: db
     image: 'postgres:16-alpine'
     ports:
       - "5432:5432"
     volumes:
       - postgres:/var/lib/postgresql/data
+    restart: always
     environment:
       POSTGRES_DB: ${DATASOURCE_URL}
       POSTGRES_USER: ${DATASOURCE_USERNAME}
@@ -37,6 +39,24 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    container_name: redis-db
+    image: 'redis:7-alpine'
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/data
+    restart: always
+    environment:
+      REDIS_PASSWORD: ${REDIS_DATASOURCE_URL}
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   postgres:
+    driver: local
+  redis:
     driver: local
