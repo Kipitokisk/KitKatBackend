@@ -17,8 +17,8 @@ public class RedisService {
     }
 
     public void storeVerificationCode(String email, String verificationCode){
-        //redisTemplate.opsForValue().set(email, verificationCode, 5, TimeUnit.MINUTES);
-        userVerificationCodeRepository.save(new UserVerificationCode(email, verificationCode));
+        redisTemplate.opsForValue().set(email, verificationCode, 5, TimeUnit.MINUTES);
+        //userVerificationCodeRepository.save(new UserVerificationCode(email, verificationCode));
     }
 
     public String getStoredCode(String email){
