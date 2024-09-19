@@ -47,8 +47,8 @@ services:
     volumes:
       - redis:/data
     restart: always
-    environment:
-      REDIS_PASSWORD: ${REDIS_DATASOURCE_URL}
+#    environment:
+#      REDIS_PASSWORD: ${REDIS_DATASOURCE_URL}
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s

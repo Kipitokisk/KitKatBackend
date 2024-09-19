@@ -72,21 +72,6 @@ public class AuthenticationController {
 
             return ResponseEntity.ok("Verification code sent successfully");
 
-//            // Generate JWT token
-//            String issuer = user.getUserId().toString();
-//            String jwt = jwtTokenUtil.generateToken(issuer);
-//
-//            // Create success response
-//            Map<String, Object> res = new HashMap<>();
-//            res.put("id", user.getUserId());
-//            res.put("email", user.getEmail());
-//            res.put("jwt", jwt);
-//
-//            log.info("User logged succesfuly: {}", body.getEmail());
-//
-//            // Return success response with user id, user email and JWT token
-//            return ResponseEntity.ok(res);
-
         } catch (Exception e) {
             // Catch any unexpected exceptions and return internal server error response
             log.error("User login failed: {}", e.getMessage());
