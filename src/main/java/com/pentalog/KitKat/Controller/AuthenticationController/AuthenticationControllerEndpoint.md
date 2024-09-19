@@ -21,14 +21,50 @@ curl --location 'http://localhost:8080/api/login' \
 }'
 ```
 ##### Response
-Upon execution, this endpoint returns a JSON response with the following structure:
-``` JSON
+Upon execution, this endpoint returns status 200 OK with message "Verification code sent successfully", or 
+```JSON
 {
-    "jwt": <jwt_token>,
-    "id": <user_id>,
-    "email": <user_email>
+    "message": "User not found"
 }
 ```
+
+#### _Login OTP_
+#### Description
+This endpoint checks the verification code sent to user.
+##### Request Body
+* `email` is the user's new account email. To be valid it has to contain '@'
+* `verificationCode` is the verification code sent to user's email
+````JSON
+{
+  "email": "<user_email>",
+  "verificationCode" : "<verification_code>"
+}
+````
+#### Request
+````Curl
+curl --location 'http://localhost:8080/api/login-otp' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "email": "<user_email>",
+    "verificationCode" : "<verification_code>"
+}'
+````
+#### Response
+Upon execution, this endpoint returns a JSON response with the following structure:
+````Json
+{
+    "jwt": "<jwt_token>",
+    "id": "<user_id>",
+    "email": "<user_email>"
+}
+````
+In case it fails, the response is:
+````Json
+{
+    "message": "<message>",
+    "error": "<error>"
+}
+````
 
 #### _Register_
 ##### Description
