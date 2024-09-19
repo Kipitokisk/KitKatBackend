@@ -9,7 +9,7 @@ public class PasswordGeneratorService {
     private static final String LOWER_CASE = "abcdefghijklmnopqrstuvwxyz";
     private static final String UPPER_CASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String DIGITS = "0123456789";
-    private static final String SYMBOLS = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+    private static final String SYMBOLS = "!@#$%^&*()_+[]/~-";
 
     private static final String ALL_CHARACTERS = LOWER_CASE + UPPER_CASE + DIGITS + SYMBOLS;
     private static final SecureRandom random = new SecureRandom();
