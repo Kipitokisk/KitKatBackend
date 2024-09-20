@@ -1,9 +1,11 @@
 package com.pentalog.KitKat.DTO;
 
+import com.pentalog.KitKat.Entities.Project;
+
 import java.util.BitSet;
 import java.util.List;
 
-public class WorkerToManagerDashboardDTO {
+public class WorkerToManagerDTO {
     private Integer id;
     private String name;
     private String surname;
@@ -13,17 +15,36 @@ public class WorkerToManagerDashboardDTO {
     private String role;
     private List<String> languages;
     private List<String> skills;
-    private String status;
+    private String city;
+    private BitSet cv;
+    private String project;
 
-    public WorkerToManagerDashboardDTO() {
+
+    public WorkerToManagerDTO() {
     }
 
-    public String getStatus() {
-        return status;
+    public String getCity() {
+        return city;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public BitSet getCv() {
+        return cv;
+    }
+
+    public void setCv(BitSet cv) {
+        this.cv = cv;
+    }
+
+    public String getProject() {
+        return project;
+    }
+
+    public void setProject(String project) {
+        this.project = project;
     }
 
     public Integer getId() {

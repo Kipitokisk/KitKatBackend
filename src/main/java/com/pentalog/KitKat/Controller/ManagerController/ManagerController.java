@@ -1,11 +1,15 @@
 package com.pentalog.KitKat.Controller.ManagerController;
 
+import com.pentalog.KitKat.DTO.WorkerProjectDTO;
 import com.pentalog.KitKat.DTO.WorkerToManagerDashboardDTO;
+import com.pentalog.KitKat.Entities.User.User;
+import com.pentalog.KitKat.Service.ProjectService;
+import com.pentalog.KitKat.Service.UserService;
 import com.pentalog.KitKat.Service.WorkersToManagerDashboardService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -15,14 +19,34 @@ import java.util.List;
 public class ManagerController {
 
     private final WorkersToManagerDashboardService workersToManagerDashboardService;
+    private final ProjectService projectService;
 
-    public ManagerController(WorkersToManagerDashboardService workersToManagerDashboardService) {
+    public ManagerController(WorkersToManagerDashboardService workersToManagerDashboardService, UserService userService, ProjectService projectService) {
         this.workersToManagerDashboardService = workersToManagerDashboardService;
+        this.projectService = projectService;
     }
 
     @GetMapping("/workers")
-    public List<WorkerToManagerDashboardDTO> employeesDashboard() {
+    public ResponseEntity<?> employeesDashboard() {
         log.info("Request to get all workers");
-        return workersToManagerDashboardService.returnWorkersToManagerDashboard();
+        return ResponseEntity.ok(workersToManagerDashboardService.returnWorkersToManagerDashboard());
+    }
+
+    @GetMapping("/worker/{id}")
+    public ResponseEntity<?> getWorkerByEmail(@PathVariable Integer id) {
+        log.info("Received request to find user by id: {}", id);
+        return ResponseEntity.ok(workersToManagerDashboardService.returnWorkerById(id));
+    }
+
+    @GetMapping("/worker/get-projects")
+    public ResponseEntity<?> getProjects() {
+        log.info("Request to get all projects");
+        return ResponseEntity.ok(projectService.getProjects());
+    }
+
+    @PostMapping("/worker/set-project")
+    public ResponseEntity<?> setProject(@RequestBody WorkerProjectDTO body) {
+        log.info("Received request to set project: {}", body);
+        return  ResponseEntity.ok(projectService.setProject(body.getWorkerId(), body.getProjectName()));
     }
 }
