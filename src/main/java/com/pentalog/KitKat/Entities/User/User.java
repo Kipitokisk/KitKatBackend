@@ -46,7 +46,7 @@ public class User {
     @OneToOne()
     @JoinColumn(name = "skill_rating_id")
     private SkillRating skillRating;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
     @ManyToOne
