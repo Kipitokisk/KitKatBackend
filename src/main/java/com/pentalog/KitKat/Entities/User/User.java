@@ -55,6 +55,8 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "manager_id")
     private User managerId;
+    @Column
+    private String oauthToken;
 
     public User() {
     }
@@ -205,6 +207,14 @@ public class User {
 
     public void setManagerId(User managerId) {
         this.managerId = managerId;
+    }
+
+    public String getOauthToken() {
+        return oauthToken;
+    }
+
+    public void setOauthToken(String oauthToken) {
+        this.oauthToken = oauthToken;
     }
 
     // Helper methods to convert the comma-separated string to a List of Integers

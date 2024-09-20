@@ -38,6 +38,7 @@ public class UserService {
         log.info("User with id: {} saved successfully", savedUser.getUserId());
         return savedUser;
     }
+    public Optional<User> findUserByOauthToken(String oauthToken) {return userRepository.findUserByOauthToken(oauthToken);}
     public Optional<User> findUserById(Integer id) {return userRepository.findById(id);}
     public User findUserByEmail(String email) {return userRepository.findUserByEmail(email);}
     public List<User> getAllUsers() {
