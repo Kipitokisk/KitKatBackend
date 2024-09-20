@@ -117,4 +117,9 @@ public class UserController {
                 userUpdateDTO.getCv());
     }
 
+    @PutMapping("/reset/{id}")
+    public ResponseEntity<?> resetUser(@PathVariable("id") Integer userId) {
+        return userService.resetUser(userId);
+    }
+
 }
