@@ -28,14 +28,19 @@ public class ProjectService {
 
     public boolean setProject(Integer workerId, String projectName) {
         User user = userRepository.findById(workerId).get();
-        if(projectRepository.findByProjectName(projectName).get() == null) {
+        if(user == null){
             return false;
         }
         else{
-            user.setProject(projectRepository.findByProjectName(projectName).get());
-            userRepository.save(user);
-            log.info("Project set to user with id: {} ", workerId);
-            return true;
+            if(projectRepository.findByProjectName(projectName).get() == null) {
+                return false;
+            }
+            else{
+                user.setProject(projectRepository.findByProjectName(projectName).get());
+                userRepository.save(user);
+                log.info("Project set to user with id: {} ", workerId);
+                return true;
+            }
         }
     }
 

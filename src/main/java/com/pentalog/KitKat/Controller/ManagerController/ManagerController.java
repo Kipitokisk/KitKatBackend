@@ -26,7 +26,7 @@ public class ManagerController {
         this.projectService = projectService;
     }
 
-    @GetMapping("/workers")
+    @GetMapping("/worker")
     public ResponseEntity<?> employeesDashboard() {
         log.info("Request to get all workers");
         return ResponseEntity.ok(workersToManagerDashboardService.returnWorkersToManagerDashboard());
@@ -38,13 +38,13 @@ public class ManagerController {
         return ResponseEntity.ok(workersToManagerDashboardService.returnWorkerById(id));
     }
 
-    @GetMapping("/worker/get-projects")
+    @GetMapping("/worker/projects")
     public ResponseEntity<?> getProjects() {
         log.info("Request to get all projects");
         return ResponseEntity.ok(projectService.getProjects());
     }
 
-    @PostMapping("/worker/set-project")
+    @PostMapping("/worker/project")
     public ResponseEntity<?> setProject(@RequestBody WorkerProjectDTO body) {
         log.info("Received request to set project: {}", body);
         return  ResponseEntity.ok(projectService.setProject(body.getWorkerId(), body.getProjectName()));

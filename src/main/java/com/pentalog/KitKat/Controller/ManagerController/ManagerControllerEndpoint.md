@@ -11,16 +11,16 @@ Upon execution, the response is a JSON with all users with role "Worker"
 ````JSON
 [
     {
-        "id" : "<id>",
-        "name": "<name>",
-        "surname": "<surname>",
-        "email": "<email>",
-        "avatar": "<hero_image>",
-        "seniority": "<seniority>",
-        "role": "<position>",
-        "languages": "<languages>",
-        "skills": "<skills>",
-        "city" : "<city>"
+        "id" : "<int>",
+        "name": "<string>",
+        "surname": "<string>",
+        "email": "<string>",
+        "avatar": "<bit_array>",
+        "seniority": "<string>",
+        "role": "<string>",
+        "languages": "<string_array>",
+        "skills": "<string_array>",
+        "city" : "<string>"
     }
 ]
 ````
@@ -40,18 +40,18 @@ curl --location 'http://localhost:8080/manager/worker/{id}'
 Upon execution, the response is a JSON with information about requested worker
 ```JSON
 {
-    "id": "<id>",
-    "name": "<name>",
-    "surname": "<surname>",
-    "email": "<email>",
-    "avatar": "<avatar>",
-    "seniority": "<seniority>",
-    "role": "<position>",
-    "languages": "<languages>",
-    "skills": "<skills>",
-    "city": "<city>",
-    "cv": "<cv>",
-    "project": "<project_name>"
+    "id": "<int>",
+    "name": "<string>",
+    "surname": "<string>",
+    "email": "<string>",
+    "avatar": "<bit_array>",
+    "seniority": "<string>",
+    "role": "<string>",
+    "languages": "<string_array>",
+    "skills": "<string_array>",
+    "city": "<string>",
+    "cv": "<bit_array>",
+    "project": "<string>"
 }
 ```
 * `avatar` is the users avatar as BitSet.
@@ -73,12 +73,12 @@ Upon execution, the response is a JSON with information about all projects
 ````Json
 [
   {
-    "projectId" : "<project_id>",
-    "projectName" : "<project_name>",
-    "manager" : "<manager>",
-    "startDate" : "<start_date>",
-    "finishDate" : "<finish_date>",
-    "status" : "<status>"
+    "projectId" : "<int>",
+    "projectName" : "<string>",
+    "manager" : "<string>",
+    "startDate" : "<LocalDateTime>",
+    "finishDate" : "<LocalDateTime>",
+    "status" : "<boolean>"
   }
 ]
 ````
@@ -89,8 +89,8 @@ This endpoint assigns a project to the given worker
 ##### Request Body
 ```Json
 {
-  "workerId"  : "<id>",
-  "projectName" : "<project_name>"
+  "workerId"  : "<int>",
+  "projectName" : "<string>"
 }
 ```
 ##### Request
