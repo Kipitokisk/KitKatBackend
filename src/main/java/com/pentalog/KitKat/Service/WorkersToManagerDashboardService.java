@@ -123,6 +123,13 @@ public class WorkersToManagerDashboardService {
                 else{
                     worker.setStatus("On Project");
                 }
+                if(user.getCity() == null){
+                    worker.setCity(null);
+                }
+                else{
+                    worker.setCity(cityRepository.findById(user.getCity().getCityId()).get().getCityName() + ", " +
+                            countryRepository.findById(cityRepository.findById(user.getCity().getCityId()).get().getCountry().getCountryId()).get().getCountryName());
+                }
                 workersToManagerDashboardList.add(worker);
             }
         }

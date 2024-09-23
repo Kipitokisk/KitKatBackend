@@ -15,6 +15,16 @@ public class WorkerToManagerDashboardDTO {
     private List<String> skills;
     private String status;
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    private String city;
+
     public WorkerToManagerDashboardDTO() {
     }
 
