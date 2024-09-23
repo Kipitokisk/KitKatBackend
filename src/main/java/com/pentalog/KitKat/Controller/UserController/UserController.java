@@ -1,8 +1,7 @@
 package com.pentalog.KitKat.Controller.UserController;
 
-import com.pentalog.KitKat.DTO.ResetPasswordDTO;
-import com.pentalog.KitKat.DTO.UserDTO;
-import com.pentalog.KitKat.DTO.UserForRegistrationDTO;
+import com.pentalog.KitKat.DTO.*;
+import com.pentalog.KitKat.Entities.*;
 import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Service.ResetPasswordService;
 import com.pentalog.KitKat.Service.PasswordHashing;
@@ -63,13 +62,6 @@ public class UserController {
         }
     }
 
-//    @GetMapping("/{user_id}")
-//    public ResponseEntity<User> findUserById(@PathVariable("user_id") Integer id) {
-//        Optional<User> user = userService.findUserById(id);
-//        return user.map(ResponseEntity::ok) // If user is present, return 200 OK with the user
-//                .orElseGet(() -> ResponseEntity.notFound().build()); // If not present, return 404 Not Found
-//    }
-
     @GetMapping("/{user_email}")
     public ResponseEntity<?> findUserByEmail(@PathVariable("user_email") String email) {
         log.info("Received request to find user by email: {}", email);
@@ -111,5 +103,30 @@ public class UserController {
         }
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUser(@RequestBody UserUpdateDTO userUpdateDTO) {
+        log.info("Received request to update user with ID: {}", userUpdateDTO.getUserId());
+
+        try {
+            return userService.updateUser(userUpdateDTO.getUserId(),
+                    userUpdateDTO.getFirstName(),
+                    userUpdateDTO.getLastName(),
+                    userUpdateDTO.getAvatar(),
+                    userUpdateDTO.getPosition(),
+                    userUpdateDTO.getSeniority(),
+                    userUpdateDTO.getCity(),
+                    userUpdateDTO.getLanguages(),
+                    userUpdateDTO.getCv());
+        } catch (Exception e) {
+            log.error("Error updating user with ID: {}", userUpdateDTO.getUserId(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update user: " + e.getMessage());
+        }
+    }
+
+
+    @PutMapping("/reset/{id}")
+    public ResponseEntity<?> resetUser(@PathVariable("id") Integer userId) {
+        return userService.resetUser(userId);
+    }
 
 }
