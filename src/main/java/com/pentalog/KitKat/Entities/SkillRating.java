@@ -9,10 +9,10 @@ public class SkillRating {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer skillRatingId;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "skill_id")
     private Skill skill;
     @Column

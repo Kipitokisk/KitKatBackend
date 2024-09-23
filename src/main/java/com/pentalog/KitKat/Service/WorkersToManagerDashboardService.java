@@ -51,7 +51,7 @@ public class WorkersToManagerDashboardService {
         for (User user : users) {
             //!!! When database will be populated, this: user.getRole() == null has to be replaced by:
             //Objects.equals(roleRepository.findById(user.getRole().getRoleId()).get().getName(), "Worker")
-            if( user.getRole() == null) {
+            if( user.getRole().getRoleId() == 2){
                 WorkerToManagerDashboardDTO worker = new WorkerToManagerDashboardDTO();
 
                 worker.setId(user.getUserId());
@@ -98,7 +98,7 @@ public class WorkersToManagerDashboardService {
                 }
                 else {
                     String languagesList = user.getLanguages();
-                    String[] languagesIds = languagesList.split(",");
+                    String[] languagesIds = languagesList.split(", ");
                     List<String> languages = new ArrayList<>();
                     for (String languageId : languagesIds) {
                         languages.add(languageRepository.findById(Integer.valueOf(languageId)).get().getLanguageName());

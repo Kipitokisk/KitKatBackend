@@ -27,10 +27,10 @@ public class User {
     private String email;
     @Column
     private BitSet password;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "position_id")
     private Position position;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "seniority_id")
     private Seniority seniority;
     @ManyToOne
@@ -40,7 +40,7 @@ public class User {
     private String languages;
     @Column
     private BitSet cv;
-    @OneToOne()
+    @ManyToOne()
     @JoinColumn(name = "project_id")
     private Project project;
     @OneToOne()
