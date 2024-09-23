@@ -79,32 +79,56 @@ public class UserService {
 
 
     public ResponseEntity<?> updateUser(Integer userId, String firstName, String lastName,
-                           BitSet avatar, String position, String seniority, String city,
-                           String languages, BitSet cv) {
+                                        BitSet avatar, String position, String seniority, String city,
+                                        String languages, BitSet cv) {
 
-        User existingUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        log.info("Updating user with ID: {}", userId);
+
+        User existingUser = userRepository.findById(userId).orElseThrow(() -> {
+            log.error("User with ID {} not found", userId);
+            return new RuntimeException("User not found");
+        });
 
         if (firstName != null) existingUser.setFirstName(firstName);
         if (lastName != null) existingUser.setLastName(lastName);
         if (avatar != null) existingUser.setAvatar(avatar);
+
         if (city != null) {
-            City cityEntity = cityRepository.findByCityName(city).orElseThrow(() -> new RuntimeException("City not found"));
+            log.info("Updating city for user ID {}", userId);
+            City cityEntity = cityRepository.findByCityName(city).orElseThrow(() -> {
+                log.error("City '{}' not found for user ID {}", city, userId);
+                return new RuntimeException("City not found");
+            });
             existingUser.setCity(cityEntity);
         }
+
         if (position != null) {
-            Position positionEntity = positionRepository.findByName(position).orElseThrow(() -> new RuntimeException("Position not found"));
+            log.info("Updating position for user ID {}", userId);
+            Position positionEntity = positionRepository.findByName(position).orElseThrow(() -> {
+                log.error("Position '{}' not found for user ID {}", position, userId);
+                return new RuntimeException("Position not found");
+            });
             existingUser.setPosition(positionEntity);
         }
+
         if (seniority != null) {
-            Seniority seniorityEntity = seniorityRepository.findByName(seniority).orElseThrow(() -> new RuntimeException("Seniority not found"));
+            log.info("Updating seniority for user ID {}", userId);
+            Seniority seniorityEntity = seniorityRepository.findByName(seniority).orElseThrow(() -> {
+                log.error("Seniority '{}' not found for user ID {}", seniority, userId);
+                return new RuntimeException("Seniority not found");
+            });
             existingUser.setSeniority(seniorityEntity);
         }
+
         if (languages != null) existingUser.setLanguages(languages);
         if (cv != null) existingUser.setCv(cv);
 
         userRepository.save(existingUser);
+        log.info("User with ID {} updated successfully", userId);
+
         return ResponseEntity.ok("User updated successfully");
     }
+
 
     public ResponseEntity<?> resetUser(Integer userId) {
         User existingUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));

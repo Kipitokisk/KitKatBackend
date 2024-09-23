@@ -68,3 +68,16 @@ Upon execution, this endpoint returns a JSON response with the following structu
     "email": <user_email>
 }
 ```
+
+#### _OAuth2 Sign in_
+##### Description
+This endpoint uses Google as a sign in method.
+##### Response
+Upon execution, this endpoint creates/updates the OAuth token and returns a JSON response with the following structure:
+``` JSON
+{
+    "id": <user_id>,
+    "email": <user_email>,
+    "jwt": <jwt_token>
+}
+```

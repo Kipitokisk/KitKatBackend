@@ -105,17 +105,24 @@ public class UserController {
 
     @PutMapping("/update")
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateDTO userUpdateDTO) {
+        log.info("Received request to update user with ID: {}", userUpdateDTO.getUserId());
 
-        return userService.updateUser(userUpdateDTO.getUserId(),
-                userUpdateDTO.getFirstName(),
-                userUpdateDTO.getLastName(),
-                userUpdateDTO.getAvatar(),
-                userUpdateDTO.getPosition(),
-                userUpdateDTO.getSeniority(),
-                userUpdateDTO.getCity(),
-                userUpdateDTO.getLanguages(),
-                userUpdateDTO.getCv());
+        try {
+            return userService.updateUser(userUpdateDTO.getUserId(),
+                    userUpdateDTO.getFirstName(),
+                    userUpdateDTO.getLastName(),
+                    userUpdateDTO.getAvatar(),
+                    userUpdateDTO.getPosition(),
+                    userUpdateDTO.getSeniority(),
+                    userUpdateDTO.getCity(),
+                    userUpdateDTO.getLanguages(),
+                    userUpdateDTO.getCv());
+        } catch (Exception e) {
+            log.error("Error updating user with ID: {}", userUpdateDTO.getUserId(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update user: " + e.getMessage());
+        }
     }
+
 
     @PutMapping("/reset/{id}")
     public ResponseEntity<?> resetUser(@PathVariable("id") Integer userId) {

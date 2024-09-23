@@ -76,7 +76,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         res.put("jwt", jwt);
 
         log.info("User logged in successfully: {}", email);
-        log.info("JWT: {}", jwt);
 
 
         // Return the response as a DefaultOAuth2User
