@@ -19,13 +19,15 @@ Upon execution, the response is a JSON with all users with role "Worker"
         "seniority": "<seniority>",
         "role": "<position>",
         "languages": "<languages>",
-        "skills": "skills"
+        "skills": "<skills>",
+        "city" : "<city>"
     }
 ]
 ````
 * `avatar` is the users avatar as BitSet.
 * `languages` is a string list of worker's languages
 * `skills` is a string list of worker's skills
+* `city` is a string "country, city"
 
 #### _Worker {id}_
 ##### Description
