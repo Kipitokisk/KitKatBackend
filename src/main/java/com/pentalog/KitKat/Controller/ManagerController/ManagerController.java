@@ -38,7 +38,7 @@ public class ManagerController {
         return ResponseEntity.ok(workersToManagerDashboardService.returnWorkerById(id));
     }
 
-    @GetMapping("/worker/projects")
+    @GetMapping("/worker/project")
     public ResponseEntity<?> getProjects() {
         log.info("Request to get all projects");
         return ResponseEntity.ok(projectService.getProjects());

@@ -4,7 +4,7 @@
 This endpoint gets all users with "Worker" as role from database.
 ##### Request
 ````Curl
-curl --location 'http://localhost:8080/manager/workers'
+curl --location 'http://localhost:8080/manager/worker'
 ````
 ##### Response
 Upon execution, the response is a JSON with all users with role "Worker"
@@ -66,7 +66,7 @@ Upon execution, the response is a JSON with information about requested worker
 This endpoint returns all projects from database
 ##### Request
 ````Curl
-curl --location 'http://localhost:8080/manager/worker/get-projects'
+curl --location 'http://localhost:8080/manager/worker/project'
 ````
 ##### Response
 Upon execution, the response is a JSON with information about all projects
@@ -95,7 +95,7 @@ This endpoint assigns a project to the given worker
 ```
 ##### Request
 ````Curl
-curl --location 'http://localhost:8080/manager/worker/set-project' \
+curl --location 'http://localhost:8080/manager/worker/project' \
 --header 'Content-Type: application/json' \
 --data '{
     "workerId"  : <id>,
