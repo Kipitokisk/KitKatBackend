@@ -182,18 +182,18 @@ SELECT * FROM t_projects;
 INSERT INTO t_users (first_name, last_name, email, position_id, seniority_id, city_id, languages, role_id, manager_id)
 VALUES
     ('John', 'Doe', 'john.doe1@example.com', 1, 1, 1, '1', 2, 1),  -- Assuming role_id 2 is for workers
-    ('Jane', 'Doe', 'jane.doe1@example.com', 2, 2, 2, '1, 2', 2, 2),
-    ('Michael', 'Smith', 'michael.smith@example.com', 3, 3, 3, '4, 5', 2, 3),
-    ('Emily', 'Johnson', 'emily.johnson@example.com', 4, 4, 1, '1, 7', 2, 1),
-    ('David', 'Brown', 'david.brown@example.com', 5, 2, 2, '3, 4', 2, 2),
+    ('Jane', 'Doe', 'jane.doe1@example.com', 2, 2, 2, '1,2', 2, 2),
+    ('Michael', 'Smith', 'michael.smith@example.com', 3, 3, 3, '4,5', 2, 3),
+    ('Emily', 'Johnson', 'emily.johnson@example.com', 4, 4, 1, '1,7', 2, 1),
+    ('David', 'Brown', 'david.brown@example.com', 5, 2, 2, '3,4', 2, 2),
     ('Sarah', 'Davis', 'sarah.davis@example.com', 6, 1, 3, '4', 2, 3),
     ('James', 'Miller', 'james.miller@example.com', 7, 3, 1, '2', 2, 1),
-    ('Olivia', 'Garcia', 'olivia.garcia@example.com', 8, 4, 2, '3, 2', 2, 2),
-    ('Daniel', 'Martinez', 'daniel.martinez@example.com', 9, 2, 3, '7, 3', 2, 3),
-    ('Sophia', 'Anderson', 'sophia.anderson@example.com', 10, 1, 1, '3, 4', 2, 1),
-    ('Lucas', 'Taylor', 'lucas.taylor@example.com', 12, 2, 2, '2, 3 ,5', 2, 2),
-    ('Isabella', 'Thomas', 'isabella.thomas@example.com', 11, 3, 3, '1, 6', 2, 3),
-    ('Alexander', 'Moore', 'alexander.moore@example.com', 4, 4, 1, '6, 4', 2, 1),
+    ('Olivia', 'Garcia', 'olivia.garcia@example.com', 8, 4, 2, '3,2', 2, 2),
+    ('Daniel', 'Martinez', 'daniel.martinez@example.com', 9, 2, 3, '7,3', 2, 3),
+    ('Sophia', 'Anderson', 'sophia.anderson@example.com', 10, 1, 1, '3,4', 2, 1),
+    ('Lucas', 'Taylor', 'lucas.taylor@example.com', 12, 2, 2, '2,3,5', 2, 2),
+    ('Isabella', 'Thomas', 'isabella.thomas@example.com', 11, 3, 3, '1,6', 2, 3),
+    ('Alexander', 'Moore', 'alexander.moore@example.com', 4, 4, 1, '6,4', 2, 1),
     ('Mia', 'Jackson', 'mia.jackson@example.com', 5, 2, 2, '7', 2, 2),
     ('Ethan', 'White', 'ethan.white@example.com', 6, 1, 3, '9', 2, 3),
     ('Charlotte', 'Harris', 'charlotte.harris@example.com', 7, 3, 1, '8', 2, 1),
@@ -327,3 +327,19 @@ VALUES
 
 -- Confirm the data has been inserted
 SELECT * FROM t_skill_ratings;
+
+DO $$
+    DECLARE
+        i INTEGER;
+        skill_rating INTEGER;
+    BEGIN
+        FOR i IN 4..23 LOOP  -- Assuming you have 20 users starting from user_id 4 to user_id 23
+        skill_rating := 1 + (i - 4) * 4;  -- This generates 1, 5, 9, ...
+
+        UPDATE t_users
+        SET skill_rating_id = skill_rating
+        WHERE user_id = i;
+            END LOOP;
+    END $$;
+
+-- Confirm the data has been updated

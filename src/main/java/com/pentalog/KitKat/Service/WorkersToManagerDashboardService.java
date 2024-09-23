@@ -48,10 +48,11 @@ public class WorkersToManagerDashboardService {
 
         log.info("Extracting users from database");
         List<User> users = userRepository.findAll();
+        log.info("Found {} users", users.size());
         for (User user : users) {
             //!!! When database will be populated, this: user.getRole() == null has to be replaced by:
             //Objects.equals(roleRepository.findById(user.getRole().getRoleId()).get().getName(), "Worker")
-            if( user.getRole().getRoleId() == 2){
+            if( roleRepository.findById(user.getRole().getRoleId()).get().getName() == "worker"){
                 WorkerToManagerDashboardDTO worker = new WorkerToManagerDashboardDTO();
 
                 worker.setId(user.getUserId());
@@ -98,7 +99,7 @@ public class WorkersToManagerDashboardService {
                 }
                 else {
                     String languagesList = user.getLanguages();
-                    String[] languagesIds = languagesList.split(", ");
+                    String[] languagesIds = languagesList.split(",");
                     List<String> languages = new ArrayList<>();
                     for (String languageId : languagesIds) {
                         languages.add(languageRepository.findById(Integer.valueOf(languageId)).get().getLanguageName());
