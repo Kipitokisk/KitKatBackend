@@ -18,8 +18,8 @@ Upon execution, the response is a JSON with all users with role "Worker"
         "avatar": "<bit_array>",
         "seniority": "<string>",
         "role": "<string>",
-        "languages": "<string_array>",
-        "skills": "<string_array>",
+        "languages": "<string_list>",
+        "skills": "<string_list>",
         "city" : "<string>"
     }
 ]
@@ -47,8 +47,8 @@ Upon execution, the response is a JSON with information about requested worker
     "avatar": "<bit_array>",
     "seniority": "<string>",
     "role": "<string>",
-    "languages": "<string_array>",
-    "skills": "<string_array>",
+    "languages": "<string_list>",
+    "skills": "<string_list>",
     "city": "<string>",
     "cv": "<bit_array>",
     "project": "<string>"
@@ -90,7 +90,7 @@ This endpoint assigns a project to the given worker
 ```Json
 {
   "workerId"  : "<int>",
-  "projectName" : "<string>"
+  "projectId" : "<int>"
 }
 ```
 ##### Request
@@ -98,8 +98,8 @@ This endpoint assigns a project to the given worker
 curl --location 'http://localhost:8080/manager/worker/project' \
 --header 'Content-Type: application/json' \
 --data '{
-    "workerId"  : <id>,
-    "projectName" : <project_name>
+    "workerId"  : <int>,
+    "projectId" : <int>
 }'
 ````
 ##### Response

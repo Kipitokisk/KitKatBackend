@@ -2,14 +2,14 @@ package com.pentalog.KitKat.DTO;
 
 public class WorkerProjectDTO {
     private Integer workerId;
-    private String projectName;
+    private Integer projectId;
 
     public WorkerProjectDTO() {
     }
 
-    public WorkerProjectDTO(Integer workerId, String projectName) {
+    public WorkerProjectDTO(Integer workerId, Integer projectId) {
         this.workerId = workerId;
-        this.projectName = projectName;
+        this.projectId = projectId;
     }
 
     public Integer getWorkerId() {
@@ -20,11 +20,11 @@ public class WorkerProjectDTO {
         this.workerId = workerId;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public Integer getProjectId() {
+        return projectId;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setProjectId(Integer projectId) {
+        this.projectId = projectId;
     }
 }
