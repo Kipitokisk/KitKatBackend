@@ -48,10 +48,14 @@ public class WorkersToManagerDashboardService {
 
         log.info("Extracting users from database");
         List<User> users = userRepository.findAll();
+        log.info("Found {} users", users.size());
         for (User user : users) {
             //!!! When database will be populated, this: user.getRole() == null has to be replaced by:
             //Objects.equals(roleRepository.findById(user.getRole().getRoleId()).get().getName(), "Worker")
-            if( user.getRole().getRoleId() == 2){
+            if (user.getRole() != null && roleRepository.findById(user.getRole().getRoleId())
+                    .map(role -> "Worker".equalsIgnoreCase(role.getName()))
+                    .orElse(false)){
+                log.info("Extract info about user: {}", user.getUserId());
                 WorkerToManagerDashboardDTO worker = new WorkerToManagerDashboardDTO();
 
                 worker.setId(user.getUserId());
@@ -83,14 +87,14 @@ public class WorkersToManagerDashboardService {
                     worker.setSeniority(null);
                 }
                 else {
-                    worker.setSeniority(seniorityRepository.findById(user.getUserId()).get().getName());
+                    worker.setSeniority(seniorityRepository.findById(user.getSeniority().getSeniortyId()).get().getName());
                 }
 
                 if(user.getPosition() == null){
                     worker.setRole(null);
                 }
                 else {
-                    worker.setRole(positionRepository.findById(user.getUserId()).get().getName());
+                    worker.setRole(positionRepository.findById(user.getRole().getRoleId()).get().getName());
                 }
 
                 if(user.getLanguages() == null){
@@ -98,7 +102,7 @@ public class WorkersToManagerDashboardService {
                 }
                 else {
                     String languagesList = user.getLanguages();
-                    String[] languagesIds = languagesList.split(", ");
+                    String[] languagesIds = languagesList.split(",");
                     List<String> languages = new ArrayList<>();
                     for (String languageId : languagesIds) {
                         languages.add(languageRepository.findById(Integer.valueOf(languageId)).get().getLanguageName());
@@ -131,6 +135,8 @@ public class WorkersToManagerDashboardService {
                             countryRepository.findById(cityRepository.findById(user.getCity().getCityId()).get().getCountry().getCountryId()).get().getCountryName());
                 }
                 workersToManagerDashboardList.add(worker);
+                log.info("Finish extract info about user: {}", user.getUserId());
+
             }
         }
 
@@ -172,14 +178,14 @@ public class WorkersToManagerDashboardService {
             worker.setSeniority(null);
         }
         else {
-            worker.setSeniority(seniorityRepository.findById(user.getUserId()).get().getName());
+            worker.setSeniority(seniorityRepository.findById(user.getSeniority().getSeniortyId()).get().getName());
         }
 
         if(user.getPosition() == null){
             worker.setRole(null);
         }
         else {
-            worker.setRole(positionRepository.findById(user.getUserId()).get().getName());
+            worker.setRole(positionRepository.findById(user.getRole().getRoleId()).get().getName());
         }
 
         if(user.getLanguages() == null){
