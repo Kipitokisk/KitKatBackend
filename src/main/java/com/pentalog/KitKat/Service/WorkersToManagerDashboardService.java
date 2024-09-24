@@ -50,12 +50,10 @@ public class WorkersToManagerDashboardService {
         List<User> users = userRepository.findAll();
         log.info("Found {} users", users.size());
         for (User user : users) {
-            //!!! When database will be populated, this: user.getRole() == null has to be replaced by:
-            //Objects.equals(roleRepository.findById(user.getRole().getRoleId()).get().getName(), "Worker")
             if (user.getRole() != null && roleRepository.findById(user.getRole().getRoleId())
                     .map(role -> "Worker".equalsIgnoreCase(role.getName()))
                     .orElse(false)){
-                log.info("Extract info about user: {}", user.getUserId());
+
                 WorkerToManagerDashboardDTO worker = new WorkerToManagerDashboardDTO();
 
                 worker.setId(user.getUserId());
@@ -135,7 +133,6 @@ public class WorkersToManagerDashboardService {
                             countryRepository.findById(cityRepository.findById(user.getCity().getCityId()).get().getCountry().getCountryId()).get().getCountryName());
                 }
                 workersToManagerDashboardList.add(worker);
-                log.info("Finish extract info about user: {}", user.getUserId());
 
             }
         }

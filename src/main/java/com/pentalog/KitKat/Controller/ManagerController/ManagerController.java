@@ -47,6 +47,18 @@ public class ManagerController {
     @PostMapping("/worker/project")
     public ResponseEntity<?> setProject(@RequestBody WorkerProjectDTO body) {
         log.info("Received request to set project: {}", body);
-        return  ResponseEntity.ok(projectService.setProject(body.getWorkerId(), body.getProjectName()));
+
+        try {
+            boolean isProjectSet = projectService.setProject(body.getWorkerId(), body.getProjectName());
+            if (isProjectSet) {
+                return ResponseEntity.ok("Project set successfully.");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to set project.");
+            }
+        } catch (Exception e) {
+            log.error("Error occurred while setting project: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while setting the project.");
+        }
     }
+
 }
