@@ -49,7 +49,7 @@ public class ManagerController {
         log.info("Received request to set project: {}", body);
 
         try {
-            boolean isProjectSet = projectService.setProject(body.getWorkerId(), body.getProjectName());
+            boolean isProjectSet = projectService.setProject(body.getWorkerId(), body.getProjectId());
             if (isProjectSet) {
                 return ResponseEntity.ok("Project set successfully.");
             } else {

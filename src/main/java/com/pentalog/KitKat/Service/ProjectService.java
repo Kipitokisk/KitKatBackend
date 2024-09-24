@@ -74,24 +74,24 @@ public class ProjectService {
         return projectDTOs;
     }
 
-    public boolean setProject(Integer workerId, String projectName) {
+    public boolean setProject(Integer workerId, Integer projectId) {
         User user = userRepository.findById(workerId).get();
         if(user == null){
             return false;
         }
         else{
-            if(projectName == null)
+            if(projectId == 0)
             {
                 user.setProject(null);
                 userRepository.save(user);
                 log.info("User with id {} removed from project. ", workerId);
                 return true;
             }
-            if(projectRepository.findByProjectName(projectName).get() == null) {
+            if(projectRepository.findById(projectId) == null) {
                 return false;
             }
             else{
-                user.setProject(projectRepository.findByProjectName(projectName).get());
+                user.setProject(projectRepository.findById(projectId).get());
                 userRepository.save(user);
                 log.info("Project set to user with id: {} ", workerId);
                 return true;
