@@ -71,6 +71,14 @@ public class SkillRating {
         this.nrOfReviews = nrOfReviews;
     }
 
+    public void updateRating(Integer newRating) {
+        // Update the number of reviews
+        this.nrOfReviews++;
+
+        // Recalculate the average rating
+        this.ratingSum = ((this.ratingSum * (this.nrOfReviews - 1)) + newRating) / this.nrOfReviews;
+    }
+
     @Override
     public String toString() {
         return "SkillRating{" +

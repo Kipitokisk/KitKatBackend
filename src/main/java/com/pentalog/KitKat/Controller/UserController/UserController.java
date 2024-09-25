@@ -9,6 +9,7 @@ import com.pentalog.KitKat.Service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -129,4 +130,14 @@ public class UserController {
         return userService.resetUser(userId);
     }
 
+    @GetMapping("/filter")
+    public List<FilteredUser> filterUsers(
+            @RequestParam(required = false) List<Integer> positionIds,
+            @RequestParam(required = false) List<Integer> seniorityIds,
+            @RequestParam(required = false) List<Integer> cityIds,
+            @RequestParam(required = false) List<Integer> roleIds,
+            @RequestParam(required = false) List<Integer> languages
+    ) {
+        return userService.filterUsers(positionIds, seniorityIds, cityIds, roleIds, languages);
+    }
 }
