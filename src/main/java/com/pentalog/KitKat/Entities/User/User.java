@@ -1,5 +1,6 @@
 package com.pentalog.KitKat.Entities.User;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pentalog.KitKat.Entities.*;
 import jakarta.persistence.*;
 import org.jetbrains.annotations.NotNull;

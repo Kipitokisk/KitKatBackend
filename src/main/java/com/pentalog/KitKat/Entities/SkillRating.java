@@ -1,5 +1,6 @@
 package com.pentalog.KitKat.Entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pentalog.KitKat.Entities.User.User;
 import jakarta.persistence.*;
 
@@ -11,6 +12,7 @@ public class SkillRating {
     private Integer skillRatingId;
     @OneToOne
     @JoinColumn(name = "user_id")
+    @JsonManagedReference
     private User user;
     @OneToOne
     @JoinColumn(name = "skill_id")

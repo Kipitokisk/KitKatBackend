@@ -172,12 +172,13 @@ public class UserService {
                                   List<Integer> seniorityIds,
                                   List<Integer> cityIds,
                                   List<Integer> roleIds,
-                                  List<Integer> languageIds) {
+                                  List<Integer> languageIds,
+                                          Boolean hasProject) {
 
         String languageIdsStr = languageIds.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
-        List<User> users = userRepository.filterUsers(positionIds, seniorityIds, cityIds, roleIds, languageIdsStr);
+        List<User> users = userRepository.filterUsers(positionIds, seniorityIds, cityIds, roleIds, languageIdsStr, hasProject);
         List<FilteredUser> filteredUsers = new LinkedList<>();
         for (User user: users) {
             List<Language> languagesList = new LinkedList<>();

@@ -21,7 +21,7 @@ curl --location 'http://localhost:8080/admin/save-country' \
 Upon execution, this endpoint returns a JSON response with the following structure:
 ``` JSON
 {
-    "countryId": <country_id>,
+    "countryId": <country_id_Integer>,
     "countryName": <country_name>
 }
 ```
@@ -51,10 +51,10 @@ curl --location 'http://localhost:8080/admin/save-city' \
 Upon execution, this endpoint returns a JSON response with the following structure:
 ``` JSON
 {
-    "cityId": <city_id>,
+    "cityId": <city_id_Integer>,
     "cityName": <city_name>,
     "country": {
-        "countryId": <country_id>,
+        "countryId": <country_id_Integer>,
         "countryName": <country_name>
     }
 }
@@ -82,7 +82,7 @@ curl --location 'http://localhost:8080/admin/save-position' \
 Upon execution, this endpoint returns a JSON response with the following structure:
 ``` JSON
 {
-    "positionId": <position_id>,
+    "positionId": <position_id_Integer>,
     "name": <position_name>
 }
 ```
@@ -109,7 +109,7 @@ curl --location 'http://localhost:8080/admin/save-role' \
 Upon execution, this endpoint returns a JSON response with the following structure:
 ``` JSON
 {
-    "roleId": <role_id>,
+    "roleId": <role_id_Integer>,
     "name": <role_name>
 }
 ```
@@ -136,7 +136,7 @@ curl --location 'http://localhost:8080/admin/save-status' \
 Upon execution, this endpoint returns a JSON response with the following structure:
 ``` JSON
 {
-    "statusId": <status_id>,
+    "statusId": <status_id_Integer>,
     "name": <status_name>
 }
 ```

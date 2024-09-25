@@ -1,22 +1,18 @@
 package com.pentalog.KitKat.Controller.UserController;
 
 import com.pentalog.KitKat.DTO.*;
-import com.pentalog.KitKat.Entities.*;
 import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Service.ResetPasswordService;
 import com.pentalog.KitKat.Service.PasswordHashing;
+import com.pentalog.KitKat.Service.SkillRatingService;
 import com.pentalog.KitKat.Service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-
-import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -25,11 +21,13 @@ public class UserController {
     private final UserService userService;
     private final PasswordHashing passwordHashing;
     private final ResetPasswordService resetPasswordService;
+    private final SkillRatingService skillRatingService;
 
-    public UserController(UserService userService, PasswordHashing passwordHashing, ResetPasswordService resetPasswordService) {
+    public UserController(UserService userService, PasswordHashing passwordHashing, ResetPasswordService resetPasswordService, SkillRatingService skillRatingService) {
         this.userService = userService;
         this.passwordHashing = passwordHashing;
         this.resetPasswordService = resetPasswordService;
+        this.skillRatingService = skillRatingService;
     }
 
     @PostMapping("/create")
@@ -136,8 +134,26 @@ public class UserController {
             @RequestParam(required = false) List<Integer> seniorityIds,
             @RequestParam(required = false) List<Integer> cityIds,
             @RequestParam(required = false) List<Integer> roleIds,
-            @RequestParam(required = false) List<Integer> languages
+            @RequestParam(required = false) List<Integer> languages,
+            @RequestParam(required = false) Boolean project
     ) {
-        return userService.filterUsers(positionIds, seniorityIds, cityIds, roleIds, languages);
+        return userService.filterUsers(positionIds, seniorityIds, cityIds, roleIds, languages, project);
+    }
+
+    @PostMapping("/save-skill-rating")
+    public ResponseEntity<?> saveSkillRating(@RequestParam Integer userId,
+                                             @RequestParam Integer skillId,
+                                             @RequestParam Integer rating) {
+        log.debug("Received request to save skill rating for user: {} and skill: {}", userId, skillId);
+        return skillRatingService.saveSkillRating(userId, skillId, rating);
+    }
+
+    // Endpoint to submit a new rating for an existing skill rating
+    @PostMapping("/submit-skill-rating")
+    public ResponseEntity<?> submitRating(@RequestParam Integer userId,
+                                          @RequestParam Integer skillId,
+                                          @RequestParam Integer newRating) {
+        log.debug("Received request to submit new rating for user: {} and skill: {}", userId, skillId);
+        return skillRatingService.submitRating(userId, skillId, newRating);
     }
 }

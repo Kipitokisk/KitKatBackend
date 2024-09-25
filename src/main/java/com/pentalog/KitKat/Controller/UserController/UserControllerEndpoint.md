@@ -55,7 +55,7 @@ curl --location 'http://localhost:8080/user/create' \
 Upon execution, this endpoint returns a JSON response with the following structure:
 ``` JSON
 {
-    "userId": 1,
+    "userId": 1(INTEGER),
     "avatar": null,
     "firstName": <user_first_name>,
     "lastName": <user_last_name>,
@@ -90,7 +90,7 @@ curl --location 'http://localhost:8080/user/<user_email>'
 Upon execution, this endpoint returns a JSON response with the following structure:
 ``` JSON
 {
-    "userId": 1,
+    "userId": 1(INTEGER),
     "avatar": null,
     "firstName": null,
     "lastName": null,
@@ -156,7 +156,7 @@ curl --location --request PUT 'http://localhost:8080/user/update' \
 --header 'Content-Type: application/json' \
 --header 'Cookie: JSESSIONID=611504409644BD821112F959E3D99EB4' \
 --data '{
-    "userId": <user_id>,
+    "userId": <user_id_Integer>,
     "firstName": <user_firstName>,
     "lastName": <user_lastName>,
     "avatar": <user_avatar>,
@@ -175,8 +175,41 @@ Upon execution, this endpoint returns the message "User updated successfully".
 This endpoint resets user info.
 ##### Request
 ```Curl
-curl --location --request PUT 'http://localhost:8080/user/reset/<user_id>' \
+curl --location --request PUT 'http://localhost:8080/user/reset/<user_id_Integer>' \
 --header 'Cookie: JSESSIONID=611504409644BD821112F959E3D99EB4'
 ```
 ##### Response
 Upon execution, this endpoint returns the message "User info reset successfully".
+
+#### _Filter users_
+##### Description
+This endpoint filters users via more categories.
+##### Request Body
+* `positionIds` is the user's position ids.
+* `seniorityIds` is the user's seniority ids.
+* `cityIds` is the user's city ids.
+* `roleIds` is the user's role ids.
+* `languages` is the user's languages ids.
+##### Request
+```Curl
+curl --location 'http://localhost:8080/user/filter?positionIds=<integer>&seniorityIds=<integer>&cityIds=<integer>&roleIds=<integer>&languages=<integer>' \
+--header 'Cookie: JSESSIONID=3A8AEAC938CAA4929569EF5ACD4C3B3E'
+```
+##### Response
+Upon execution, this endpoint returns a JSON response with the following structure:
+``` JSON
+{
+    "userId": 1(INTEGER),
+    "avatar": null,
+    "firstName": null,
+    "lastName": null,
+    "email": <user_email>,
+    "position": null,
+    "seniority": null,
+    "city": null,
+    "languages": null,
+    "cv": null,
+    "role": null,
+    "project": null  
+}
+```

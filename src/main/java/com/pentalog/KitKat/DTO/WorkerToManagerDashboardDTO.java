@@ -5,8 +5,8 @@ import java.util.List;
 
 public class WorkerToManagerDashboardDTO {
     private Integer id;
-    private String name;
-    private String surname;
+    private String firstName;
+    private String lastName;
     private String email;
     private BitSet avatar;
     private String seniority;
@@ -44,20 +44,20 @@ public class WorkerToManagerDashboardDTO {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {

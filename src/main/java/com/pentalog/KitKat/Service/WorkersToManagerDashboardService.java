@@ -57,17 +57,17 @@ public class WorkersToManagerDashboardService {
                 worker.setId(user.getUserId());
 
                 if(user.getFirstName()==null) {
-                    worker.setName(null);
+                    worker.setFirstName(null);
                 }
                 else {
-                    worker.setName(user.getFirstName());
+                    worker.setFirstName(user.getFirstName());
                 }
 
                 if(user.getLastName() == null){
-                    worker.setName(null);
+                    worker.setLastName(null);
                 }
                 else {
-                    worker.setSurname(user.getLastName());
+                    worker.setLastName(user.getLastName());
                 }
 
                 worker.setEmail(user.getEmail());

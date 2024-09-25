@@ -54,7 +54,7 @@ Upon execution, this endpoint returns a JSON response with the following structu
 ````Json
 {
     "jwt": "<jwt_token>",
-    "id": "<user_id>",
+    "id": "<user_id_Integer>",
     "email": "<user_email>"
 }
 ````
@@ -112,7 +112,7 @@ This endpoint uses Google as a sign in method.
 Upon execution, this endpoint creates/updates the OAuth token and returns a JSON response with the following structure:
 ``` JSON
 {
-    "id": <user_id>,
+    "id": <user_id_Integer>,
     "email": <user_email>,
     "jwt": <jwt_token>
 }
