@@ -157,13 +157,18 @@ public class UserController {
     }
 
     @GetMapping("/without-project")
-    public Integer getUsersWithoutProjectCount() {
-        return userService.countUsersWithoutProject();
+    public ResponseEntity<Map<String, Integer>> countUsersWithoutProject() {
+        Integer count = userService.countUsersWithoutProject();
+        Map<String, Integer> response = new HashMap<>();
+        response.put("count", count);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/without-project/{countryName}")
-    public ResponseEntity<Integer> getUserCountWithoutProjectByCountry(@PathVariable String countryName) {
+    public ResponseEntity<Map<String, Integer>> getUserCountWithoutProjectByCountry(@PathVariable String countryName) {
         Integer count = userService.getUserCountWithoutProjectByCountry(countryName);
-        return ResponseEntity.ok(count);
+        Map<String, Integer> response = new HashMap<>();
+        response.put("count", count);
+        return ResponseEntity.ok(response);
     }
 }
