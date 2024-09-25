@@ -18,6 +18,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/login", "/oauth2/**").permitAll()
                         .requestMatchers("/admin/**").permitAll()
                         .requestMatchers("/user/**").permitAll()
+                        .requestMatchers("/manager/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated()
                 )
