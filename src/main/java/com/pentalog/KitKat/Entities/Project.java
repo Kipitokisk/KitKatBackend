@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Table(name = "t_projects")
 public class Project {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer projectId;
     @Column(unique = true)
     private String projectName;
