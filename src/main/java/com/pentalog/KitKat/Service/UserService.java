@@ -212,4 +212,8 @@ public class UserService {
         return filteredUsers;
     }
 
+
+    public Integer countUsersWithoutProject() {
+        return userRepository.countByProjectIsNull();
+    }
 }

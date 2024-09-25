@@ -9,8 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
-    List<User> findAllByFirstNameContainingAAndLastNameContaining(String firstName, String lastName);
+    List<User> findAllByFirstNameContainingAndLastNameContaining(String firstName, String lastName);
     User findUserByEmail(String email);
+    Integer countByProjectIsNull();
     Optional<User> findUserByOauthToken(String oauthToken);
     @Query(value = "SELECT u FROM User u " +
             "WHERE (:positionIds IS NULL OR u.position.positionId IN :positionIds) " +
