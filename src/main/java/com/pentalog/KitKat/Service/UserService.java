@@ -169,16 +169,15 @@ public class UserService {
     }
 
     public List<FilteredUser> filterUsers(List<Integer> positionIds,
-                                  List<Integer> seniorityIds,
-                                  List<Integer> cityIds,
-                                  List<Integer> roleIds,
-                                  List<Integer> languageIds,
-                                          Boolean hasProject) {
+                                          List<Integer> seniorityIds,
+                                          List<Integer> cityIds,
+                                          List<Integer> roleIds,
+                                          List<Integer> languageIds) {
 
         String languageIdsStr = languageIds.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
-        List<User> users = userRepository.filterUsers(positionIds, seniorityIds, cityIds, roleIds, languageIdsStr, hasProject);
+        List<User> users = userRepository.filterUsers(positionIds, seniorityIds, cityIds, roleIds, languageIdsStr);
         List<FilteredUser> filteredUsers = new LinkedList<>();
         for (User user: users) {
             List<Language> languagesList = new LinkedList<>();

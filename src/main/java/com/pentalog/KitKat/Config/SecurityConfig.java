@@ -21,11 +21,11 @@ public class SecurityConfig {
                         .requestMatchers("/manager/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated()
-                )
-                .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("/home", true)
-                        .failureUrl("/login?error=true")
                 );
+//                .oauth2Login(oauth2 -> oauth2
+//                        .defaultSuccessUrl("/home", true)
+//                        .failureUrl("/login?error=true")
+//                );
 
         return http.build();
     }

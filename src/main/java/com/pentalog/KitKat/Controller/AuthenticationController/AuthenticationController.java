@@ -89,7 +89,7 @@ public class AuthenticationController {
         if(emailVerificationService.checkVerificationCode(body.getEmail(), body.getVerificationCode())){
             // Generate JWT token
             String issuer = user.getUserId().toString();
-            String jwt = jwtTokenUtil.generateToken(issuer);
+            String jwt = jwtTokenUtil.generateToken(issuer, user.getEmail());
 
             // Create success response
             Map<String, Object> res = new HashMap<>();
@@ -170,7 +170,7 @@ public class AuthenticationController {
 
             // Generate a JWT token for the user
             String issuer = user.getUserId().toString();
-            String jwt = jwtTokenUtil.generateToken(issuer);
+            String jwt = jwtTokenUtil.generateToken(issuer, user.getEmail());
 
             // Create success response
             Map<String, Object> res = new HashMap<>();

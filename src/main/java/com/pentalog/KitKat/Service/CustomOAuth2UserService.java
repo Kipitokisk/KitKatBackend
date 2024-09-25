@@ -67,7 +67,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         // Generate JWT for the user
         String issuer = dbUser.getUserId().toString();
-        String jwt = jwtTokenUtil.generateToken(issuer);
+        String jwt = jwtTokenUtil.generateToken(issuer, dbUser.getEmail());
 
         // Create response containing user info and JWT
         Map<String, Object> res = new HashMap<>();
