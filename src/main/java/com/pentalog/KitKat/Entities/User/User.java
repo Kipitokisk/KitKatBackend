@@ -1,5 +1,6 @@
 package com.pentalog.KitKat.Entities.User;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pentalog.KitKat.Entities.*;
 import jakarta.persistence.*;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +38,7 @@ public class User {
     @JoinColumn(name = "city_id")
     private City city;
     @Column
-    private String languages;
+    private String languages; //1,2,3
     @Column
     private BitSet cv;
     @ManyToOne()
@@ -215,21 +216,6 @@ public class User {
 
     public void setOauthToken(String oauthToken) {
         this.oauthToken = oauthToken;
-    }
-
-    // Helper methods to convert the comma-separated string to a List of Integers
-    public List<Integer> getLanguageIdList() {
-        if (this.languages != null && !this.languages.isEmpty()) {
-            return Arrays.stream(this.languages.split(","))
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toList());
-        } else return new ArrayList<>();
-    }
-
-    public void setLanguageIdList(List<Integer> languageIdList) {
-        this.languages = languageIdList.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(","));
     }
 
     @Override

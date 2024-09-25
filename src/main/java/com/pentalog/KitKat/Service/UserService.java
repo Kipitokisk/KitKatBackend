@@ -1,7 +1,9 @@
 package com.pentalog.KitKat.Service;
 
-import com.pentalog.KitKat.DTO.CityDTO;
+import com.nimbusds.jose.util.ArrayUtils;
+import com.pentalog.KitKat.DTO.FilteredUser;
 import com.pentalog.KitKat.DTO.UserForRegistrationDTO;
+import com.pentalog.KitKat.DTO.WorkerToManagerDashboardDTO;
 import com.pentalog.KitKat.Entities.*;
 import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Repository.*;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -22,15 +25,25 @@ public class UserService {
     private final CityRepository cityRepository;
     private final PositionRepository positionRepository;
     private final SeniorityRepository seniorityRepository;
+    private final LanguageRepository languageRepository;
+    private final RoleRepository roleRepository;
+    private final SkillRatingRepository skillRatingRepository;
+    private final CountryRepository countryRepository;
+    private final SkillRepository skillRepository;
 
 
-    public UserService(UserRepository userRepository, PasswordHashing passwordHashing, StatusRepository statusRepository, CityRepository cityRepository, PositionRepository positionRepository, SeniorityRepository seniorityRepository) {
+    public UserService(UserRepository userRepository, PasswordHashing passwordHashing, StatusRepository statusRepository, CityRepository cityRepository, PositionRepository positionRepository, SeniorityRepository seniorityRepository, LanguageRepository languageRepository, RoleRepository roleRepository, SkillRatingRepository skillRatingRepository, CountryRepository countryRepository, SkillRepository skillRepository) {
         this.userRepository = userRepository;
         this.passwordHashing = passwordHashing;
         this.statusRepository = statusRepository;
         this.cityRepository = cityRepository;
         this.positionRepository = positionRepository;
         this.seniorityRepository = seniorityRepository;
+        this.languageRepository = languageRepository;
+        this.roleRepository = roleRepository;
+        this.skillRatingRepository = skillRatingRepository;
+        this.countryRepository = countryRepository;
+        this.skillRepository = skillRepository;
     }
 
     public User saveUser(User user) {
@@ -120,7 +133,18 @@ public class UserService {
             existingUser.setSeniority(seniorityEntity);
         }
 
-        if (languages != null) existingUser.setLanguages(languages);
+        if (languages != null) {
+            log.info("Updating languages for user ID {}", userId);
+            String[] languagesIds = languages.split(",");
+            for (String id : languagesIds) {
+                if (languageRepository.findByLanguageId(Integer.valueOf(id)) == null) {
+                    Map<String, String> errorResponse = new HashMap<>();
+                    errorResponse.put("message", "Language not found");
+                    return ResponseEntity.status(HttpStatus.CONFLICT)
+                            .body(errorResponse);
+                } else existingUser.setLanguages(languages);
+            }
+        }existingUser.setLanguages(languages);
         if (cv != null) existingUser.setCv(cv);
 
         userRepository.save(existingUser);
@@ -143,4 +167,50 @@ public class UserService {
         userRepository.save(existingUser);
         return ResponseEntity.ok("User info reset successfully");
     }
+
+    public List<FilteredUser> filterUsers(List<Integer> positionIds,
+                                  List<Integer> seniorityIds,
+                                  List<Integer> cityIds,
+                                  List<Integer> roleIds,
+                                  List<Integer> languageIds,
+                                          Boolean hasProject) {
+
+        String languageIdsStr = languageIds.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+        List<User> users = userRepository.filterUsers(positionIds, seniorityIds, cityIds, roleIds, languageIdsStr, hasProject);
+        List<FilteredUser> filteredUsers = new LinkedList<>();
+        for (User user: users) {
+            List<Language> languagesList = new LinkedList<>();
+            if (!languageIds.isEmpty()) {
+                String userLanguages = user.getLanguages();
+                String[] languagesIds = userLanguages.split(",");
+                List<String> languages = new ArrayList<>();
+                for (String languageId : languagesIds) {
+                    languages.add(languageRepository.findById(Integer.valueOf(languageId)).get().getLanguageName());
+                }
+                for (String languageName : languages){
+                    languagesList.add(languageRepository.findByLanguageName(languageName).orElseThrow(() -> new IllegalArgumentException("Language not found")));
+                }
+            }
+
+
+            FilteredUser filteredUser = new FilteredUser();
+            filteredUser.setUserId(user.getUserId());
+            filteredUser.setAvatar(user.getAvatar());
+            filteredUser.setFirstName(user.getFirstName());
+            filteredUser.setLastName(user.getLastName());
+            filteredUser.setEmail(user.getEmail());
+            filteredUser.setPosition(user.getPosition());
+            filteredUser.setSeniority(user.getSeniority());
+            filteredUser.setCity(user.getCity());
+            filteredUser.setLanguages(languagesList);
+            filteredUser.setCv(user.getCv());
+            filteredUser.setRole(user.getRole());
+
+            filteredUsers.add(filteredUser);
+        }
+        return filteredUsers;
+    }
+
 }
