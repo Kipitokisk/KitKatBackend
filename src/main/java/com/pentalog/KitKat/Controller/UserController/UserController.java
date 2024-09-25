@@ -134,10 +134,9 @@ public class UserController {
             @RequestParam(required = false) List<Integer> seniorityIds,
             @RequestParam(required = false) List<Integer> cityIds,
             @RequestParam(required = false) List<Integer> roleIds,
-            @RequestParam(required = false) List<Integer> languages,
-            @RequestParam(required = false) Boolean project
+            @RequestParam(required = false) List<Integer> languages
     ) {
-        return userService.filterUsers(positionIds, seniorityIds, cityIds, roleIds, languages, project);
+        return userService.filterUsers(positionIds, seniorityIds, cityIds, roleIds, languages);
     }
 
     @PostMapping("/save-skill-rating")
