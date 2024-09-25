@@ -155,4 +155,9 @@ public class UserController {
         log.debug("Received request to submit new rating for user: {} and skill: {}", userId, skillId);
         return skillRatingService.submitRating(userId, skillId, newRating);
     }
+
+    @GetMapping("/without-project")
+    public Integer getUsersWithoutProjectCount() {
+        return userService.countUsersWithoutProject();
+    }
 }
