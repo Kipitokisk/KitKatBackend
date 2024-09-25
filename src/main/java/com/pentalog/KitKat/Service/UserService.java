@@ -2,6 +2,7 @@ package com.pentalog.KitKat.Service;
 
 import com.nimbusds.jose.util.ArrayUtils;
 import com.pentalog.KitKat.DTO.FilteredUser;
+import com.pentalog.KitKat.DTO.UserCountByCountryDTO;
 import com.pentalog.KitKat.DTO.UserForRegistrationDTO;
 import com.pentalog.KitKat.DTO.WorkerToManagerDashboardDTO;
 import com.pentalog.KitKat.Entities.*;
@@ -215,5 +216,17 @@ public class UserService {
 
     public Integer countUsersWithoutProject() {
         return userRepository.countByProjectIsNull();
+    }
+
+    public Integer getUserCountWithoutProjectByCountry(String countryName) {
+        // Retrieve all users
+        List<User> users = userRepository.findAll();
+
+        // Count users without a project for the given country
+        return (int) users.stream()
+                .filter(user -> user.getProject() == null) // Filter users without a project
+                .filter(user -> user.getCity() != null && user.getCity().getCountry() != null) // Ensure city and country are not null
+                .filter(user -> user.getCity().getCountry().getCountryName().equalsIgnoreCase(countryName)) // Filter by country name
+                .count(); // Count the filtered users
     }
 }

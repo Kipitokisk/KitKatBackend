@@ -160,4 +160,10 @@ public class UserController {
     public Integer getUsersWithoutProjectCount() {
         return userService.countUsersWithoutProject();
     }
+
+    @GetMapping("/without-project/{countryName}")
+    public ResponseEntity<Integer> getUserCountWithoutProjectByCountry(@PathVariable String countryName) {
+        Integer count = userService.getUserCountWithoutProjectByCountry(countryName);
+        return ResponseEntity.ok(count);
+    }
 }
