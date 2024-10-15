@@ -13,17 +13,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     User findUserByEmail(String email);
     Integer countByProjectIsNull();
     Optional<User> findUserByOauthToken(String oauthToken);
-    @Query(value = "SELECT u FROM User u " +
-            "WHERE (:positionIds IS NULL OR u.position.positionId IN :positionIds) " +
-            "AND (:seniorityIds IS NULL OR u.seniority.seniortyId IN :seniorityIds) " +
-            "AND (:cityIds IS NULL OR u.city.cityId IN :cityIds) " +
-            "AND (:roleIds IS NULL OR u.role.roleId IN :roleIds) " +
-            "AND (:languageIds IS NULL OR " +
-            "      (CONCAT(',', u.languages, ',') LIKE CONCAT('%,', :languageIds, ',%')))")
-    List<User> filterUsers(
-            @Param("positionIds") List<Integer> positionIds,
-            @Param("seniorityIds") List<Integer> seniorityIds,
-            @Param("cityIds") List<Integer> cityIds,
-            @Param("roleIds") List<Integer> roleIds,
-            @Param("languageIds") String languageIds ); // Expecting a comma-separated string of language IDs
 }

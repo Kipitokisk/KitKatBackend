@@ -12,7 +12,7 @@ public class JwtTokenUtil {
 
     // Load the .env file to get the secret key
     private static final Dotenv dotenv = Dotenv.configure()
-            .directory("/opt/demo")  // Set the directory where .env is located
+//            .directory("/opt/demo")  // Set the directory where .env is located
             .load();
 
     // Load the HASH_KEY from the .env file

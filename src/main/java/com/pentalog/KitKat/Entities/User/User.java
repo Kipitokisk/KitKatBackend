@@ -1,5 +1,6 @@
 package com.pentalog.KitKat.Entities.User;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pentalog.KitKat.Entities.*;
 import jakarta.persistence.*;
@@ -37,8 +38,14 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "city_id")
     private City city;
-    @Column
-    private String languages; //1,2,3
+    @ManyToMany
+    @JoinTable(
+            name = "user_languages",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "language_id")
+    )
+    @JsonIgnore
+    private List<Language> languages = new ArrayList<>(); // Store languages as a list
     @Column
     private BitSet cv;
     @ManyToOne()
@@ -62,7 +69,7 @@ public class User {
     public User() {
     }
 
-    public User(BitSet avatar, String firstName, String lastName, String email, BitSet password, Position position, Seniority seniority, City city, String languages, BitSet cv, Role role) {
+    public User(BitSet avatar, String firstName, String lastName, String email, BitSet password, Position position, Seniority seniority, City city, BitSet cv, Role role) {
         this.avatar = avatar;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -71,7 +78,7 @@ public class User {
         this.position = position;
         this.seniority = seniority;
         this.city = city;
-        this.languages = languages;
+        this.languages = new ArrayList<>();
         this.cv = cv;
         this.role = role;
     }
@@ -150,12 +157,20 @@ public class User {
         this.city = city;
     }
 
-    public String getLanguages() {
+    public List<Language> getLanguages() {
         return languages;
     }
 
-    public void setLanguages(String languages) {
+    public void setLanguages(List<Language> languages) {
         this.languages = languages;
+    }
+
+    public void addLanguage(Language language) {
+        this.languages.add(language);
+    }
+
+    public void removeLanguage(Language language) {
+        this.languages.remove(language);
     }
 
     public BitSet getCv() {

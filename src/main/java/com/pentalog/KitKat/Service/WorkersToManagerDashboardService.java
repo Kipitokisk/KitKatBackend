@@ -95,18 +95,24 @@ public class WorkersToManagerDashboardService {
                     worker.setRole(positionRepository.findById(user.getRole().getRoleId()).get().getName());
                 }
 
-                if(user.getLanguages() == null){
-                    worker.setLanguages(null);
-                }
-                else {
-                    String languagesList = user.getLanguages();
-                    String[] languagesIds = languagesList.split(",");
-                    List<String> languages = new ArrayList<>();
-                    for (String languageId : languagesIds) {
-                        languages.add(languageRepository.findById(Integer.valueOf(languageId)).get().getLanguageName());
-                    }
-                    worker.setLanguages(languages);
-                }
+//                if (user.getLanguages() == null) {
+//                    worker.setLanguages(null);
+//                } else {
+//                    String languagesList = user.getLanguages();
+//                    String[] languagesIds = languagesList.split(",");
+//                    List<String> languages = new ArrayList<>();
+//
+//                    for (String languageId : languagesIds) {
+//                        languageRepository.findById(Integer.valueOf(languageId)).ifPresentOrElse(
+//                                language -> languages.add(language.getLanguageName()),
+//                                () -> {
+//                                    throw new RuntimeException("Language with ID " + languageId + " not found");
+//                                }
+//                        );
+//                    }
+//                    worker.setLanguages(languages);
+//                }
+
 
                 if(user.getSkillRating() == null){
                     worker.setSkills(null);
@@ -185,18 +191,18 @@ public class WorkersToManagerDashboardService {
             worker.setRole(positionRepository.findById(user.getRole().getRoleId()).get().getName());
         }
 
-        if(user.getLanguages() == null){
-            worker.setLanguages(null);
-        }
-        else {
-            String languagesList = user.getLanguages();
-            String[] languagesIds = languagesList.split(",");
-            List<String> languages = new ArrayList<>();
-            for (String languageId : languagesIds) {
-                languages.add(languageRepository.findById(Integer.valueOf(languageId)).get().getLanguageName());
-            }
-            worker.setLanguages(languages);
-        }
+//        if(user.getLanguages() == null){
+//            worker.setLanguages(null);
+//        }
+//        else {
+//            String languagesList = user.getLanguages();
+//            String[] languagesIds = languagesList.split(",");
+//            List<String> languages = new ArrayList<>();
+//            for (String languageId : languagesIds) {
+//                languages.add(languageRepository.findById(Integer.valueOf(languageId)).get().getLanguageName());
+//            }
+//            worker.setLanguages(languages);
+//        }
 
         if(user.getSkillRating() == null){
             worker.setSkills(null);
