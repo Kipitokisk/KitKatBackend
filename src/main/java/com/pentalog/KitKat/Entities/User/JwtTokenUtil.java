@@ -1,4 +1,5 @@
 package com.pentalog.KitKat.Entities.User;
+import com.pentalog.KitKat.Entities.Role;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -22,10 +23,11 @@ public class JwtTokenUtil {
     private static final long EXPIRATION_TIME = 3 * 24 * 60 * 60 * 1000;
 
     // Method to generate a JWT token
-    public static String generateToken(String userId, String email) {
+    public static String generateToken(String userId, String email, String role) {
         return Jwts.builder()
                 .setSubject(userId) // Set user ID or email as subject
                 .claim("email", email)
+                .claim("role", role)
                 .setIssuedAt(new Date()) // Set issue date
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // Set expiration date
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY) // Sign with secret key from .env

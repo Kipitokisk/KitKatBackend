@@ -89,15 +89,16 @@ public class AuthenticationController {
         if(emailVerificationService.checkVerificationCode(body.getEmail(), body.getVerificationCode())){
             // Generate JWT token
             String issuer = user.getUserId().toString();
-            String jwt = jwtTokenUtil.generateToken(issuer, user.getEmail());
+            String jwt = jwtTokenUtil.generateToken(issuer, user.getEmail(), user.getRole().getName());
 
             // Create success response
             Map<String, Object> res = new HashMap<>();
             res.put("id", user.getUserId());
             res.put("email", user.getEmail());
+            res.put("role", user.getRole().getName());
             res.put("jwt", jwt);
 
-            log.info("User logged succesfuly: {}", body.getEmail());
+            log.info("User logged successfully: {}", body.getEmail());
 
             // Return success response with user id, user email and JWT token
             return ResponseEntity.ok(res);
@@ -139,57 +140,4 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
         }
     }
-
-    @PostMapping("/oauth-login")
-    public ResponseEntity<?> oauthLogin(@RequestBody Map<String, String> body, HttpServletResponse response) {
-        String oauthToken = body.get("oauthToken");
-        log.debug("OAuth login attempt initiated with token: {}", oauthToken);
-
-        try {
-            // Check if the token is present
-            if (oauthToken == null || oauthToken.isEmpty()) {
-                log.warn("OAuth token is missing");
-                Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("message", "OAuth token is required");
-                return ResponseEntity.badRequest().body(errorResponse);
-            }
-
-            // Find user by OAuth token in the database
-            log.debug("Searching for user by OAuth token");
-            Optional<User> userOptional = userService.findUserByOauthToken(oauthToken);
-
-            if (userOptional.isEmpty()) {
-                log.warn("User not found for OAuth token: {}", oauthToken);
-                Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("message", "User not found or invalid OAuth token");
-                return ResponseEntity.badRequest().body(errorResponse);
-            }
-
-            User user = userOptional.get();
-            log.debug("User found for OAuth token: {}", oauthToken);
-
-            // Generate a JWT token for the user
-            String issuer = user.getUserId().toString();
-            String jwt = jwtTokenUtil.generateToken(issuer, user.getEmail());
-
-            // Create success response
-            Map<String, Object> res = new HashMap<>();
-            res.put("id", user.getUserId());
-            res.put("email", user.getEmail());
-            res.put("jwt", jwt);
-
-            log.info("User logged in successfully via OAuth token: {}", oauthToken);
-
-            // Return success response with user info and JWT token
-            return ResponseEntity.ok(res);
-
-        } catch (Exception e) {
-            log.error("OAuth login failed: {}", e.getMessage());
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("message", "An error occurred during OAuth login");
-            errorResponse.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-        }
-    }
-
 }

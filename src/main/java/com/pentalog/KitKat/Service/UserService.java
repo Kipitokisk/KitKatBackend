@@ -5,11 +5,11 @@ import com.pentalog.KitKat.Entities.*;
 import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Repository.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -189,5 +189,10 @@ public class UserService {
 
         user.addLanguage(language); // Associate the language with the user
         return userRepository.save(user); // Persist the user with the new language association
+    }
+
+    public List<User> searchUsers(List<String> position, List<String> seniority, List<String> country, List<String> skill, List<String> languages) {
+        Specification<User> specification = UserSpecification.combinedFilter(position, seniority, country, skill, languages);
+        return userRepository.findAll(specification);
     }
 }

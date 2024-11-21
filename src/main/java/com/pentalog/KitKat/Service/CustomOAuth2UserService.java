@@ -5,6 +5,7 @@ import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Repository.StatusRepository;
 import com.pentalog.KitKat.Repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,63 +24,49 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
-    private UserRepository userRepository;
-    private StatusRepository statusRepository;
-    private JwtTokenUtil jwtTokenUtil;
 
-    public CustomOAuth2UserService(UserRepository userRepository, StatusRepository statusRepository, JwtTokenUtil jwtTokenUtil) {
+    private final UserRepository userRepository;
+    private final StatusRepository statusRepository;
+
+    @Autowired
+    public CustomOAuth2UserService(UserRepository userRepository, StatusRepository statusRepository) {
         this.userRepository = userRepository;
         this.statusRepository = statusRepository;
-        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oauthUser = super.loadUser(userRequest);
+        OAuth2User oauthUser = super.loadUser(userRequest); // Get OAuth2 user details
         Map<String, Object> attributes = oauthUser.getAttributes();
 
         String email = (String) attributes.get("email");
         String firstName = (String) attributes.get("given_name");
         String lastName = (String) attributes.get("family_name");
         String oauthToken = userRequest.getAccessToken().getTokenValue();
-        String googleUserId = (String) attributes.get("sub"); // Google user ID
 
-        // Check if user exists by email or Google user ID
+        log.info("OAuth2 login successful for user: {}", email);
+
+        // Check if user exists in the database
         User dbUser = userRepository.findUserByEmail(email);
-
         if (dbUser == null) {
-            // User does not exist, create a new user
+            // Register new user if not found
             dbUser = new User();
+            dbUser.setEmail(email);
             dbUser.setFirstName(firstName);
             dbUser.setLastName(lastName);
-            dbUser.setEmail(email);
-            dbUser.setStatus(statusRepository.getReferenceById(2)); // Status ID for a new user
-            dbUser.setOauthToken(oauthToken); // Store OAuth token for potential API calls
+            dbUser.setOauthToken(oauthToken); // Store OAuth token
             userRepository.save(dbUser);
 
             log.info("New user registered: {}", email);
         } else {
-            dbUser.setOauthToken(oauthToken); // Update OAuth token with the latest one
+            dbUser.setOauthToken(oauthToken); // Update OAuth token if user exists
             userRepository.save(dbUser);
 
             log.info("Existing user logged in: {}", email);
         }
 
-        // Generate JWT for the user
-        String issuer = dbUser.getUserId().toString();
-        String jwt = jwtTokenUtil.generateToken(issuer, dbUser.getEmail());
-
-        // Create response containing user info and JWT
-        Map<String, Object> res = new HashMap<>();
-        res.put("id", dbUser.getUserId());
-        res.put("email", dbUser.getEmail());
-        res.put("jwt", jwt);
-
-        log.info("User logged in successfully: {}", email);
-
-
-        // Return the response as a DefaultOAuth2User
-
-        return new DefaultOAuth2User(Collections.emptySet(), attributes, "email");
+        // Return OAuth2User (no JWT generation here)
+        return oauthUser; // Spring Security will complete the authentication process here
     }
 }
+

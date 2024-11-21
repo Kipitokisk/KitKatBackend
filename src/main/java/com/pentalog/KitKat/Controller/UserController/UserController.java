@@ -1,6 +1,9 @@
 package com.pentalog.KitKat.Controller.UserController;
 
 import com.pentalog.KitKat.DTO.*;
+import com.pentalog.KitKat.Entities.Language;
+import com.pentalog.KitKat.Entities.Position;
+import com.pentalog.KitKat.Entities.Seniority;
 import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Service.ResetPasswordService;
 import com.pentalog.KitKat.Service.PasswordHashing;
@@ -147,5 +150,17 @@ public class UserController {
     public ResponseEntity<?> addLanguageToUser(@PathVariable Integer userId, @RequestParam Integer languageId) {
         User updatedUser = userService.addLanguageToUser(userId, languageId);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<User>> searchUsers(
+            @RequestParam(required = false) List<String> position,
+            @RequestParam(required = false) List<String> seniority,
+            @RequestParam(required = false) List<String> country,
+            @RequestParam(required = false) List<String> skill,
+            @RequestParam(required = false) List<String> languages) {
+
+        List<User> filteredUsers = userService.searchUsers(position, seniority, country, skill, languages);
+        return ResponseEntity.ok(filteredUsers);
     }
 }
