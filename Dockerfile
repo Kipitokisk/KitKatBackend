@@ -1,4 +1,3 @@
-
 FROM maven:3.9.9-eclipse-temurin-17-alpine AS stage1
 ENV MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
 
@@ -21,7 +20,7 @@ COPY --from=stage1 /${JAR_FILE} /opt/demo/app.jar
 ENTRYPOINT ["java", "-jar", "/opt/demo/app.jar"]
 
 
-
+ENV APP_VERSION=${VERSION}
 
 #VOLUME /tmp
 #ENTRYPOINT ["java","-jar","/app.jar"]
