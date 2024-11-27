@@ -78,7 +78,7 @@ public class UserService {
         user.setLanguages(null);
         user.setCv(null);
         user.setProject(null);
-        user.setSkillInfo(null);
+        user.setSkillRating(null);
         user.setRole(null);
         user.setStatus(statusRepository.getReferenceById(2));
 
