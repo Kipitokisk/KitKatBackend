@@ -58,11 +58,6 @@ public class AdminController {
         return statusService.saveStatus(status);
     }
 
-    @PostMapping("/save-language")
-    public ResponseEntity<?> saveLanguage(@Valid @RequestBody Language language) {
-        return languageService.saveLanguage(language);
-    }
-
     @PostMapping("/save-skill-type")
     public ResponseEntity<?> saveSkillType(@Valid @RequestBody SkillType skillType) {
         return skillTypesService.saveSkillType(skillType);
@@ -71,5 +66,10 @@ public class AdminController {
     @PostMapping("/save-skill")
     public ResponseEntity<?> saveSkill(@Valid @RequestBody SkillDTO skillDTO) {
         return skillService.saveSkill(skillDTO);
+    }
+
+    @PostMapping("/save-language")
+    public ResponseEntity<?> saveLanguage(@RequestBody Language language) {
+        return languageService.saveLanguage(language);
     }
 }

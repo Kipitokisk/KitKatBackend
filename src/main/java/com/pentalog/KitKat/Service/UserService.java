@@ -1,20 +1,15 @@
 package com.pentalog.KitKat.Service;
 
-import com.nimbusds.jose.util.ArrayUtils;
-import com.pentalog.KitKat.DTO.FilteredUser;
-import com.pentalog.KitKat.DTO.UserCountByCountryDTO;
 import com.pentalog.KitKat.DTO.UserForRegistrationDTO;
-import com.pentalog.KitKat.DTO.WorkerToManagerDashboardDTO;
 import com.pentalog.KitKat.Entities.*;
 import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Repository.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -136,16 +131,18 @@ public class UserService {
 
         if (languages != null) {
             log.info("Updating languages for user ID {}", userId);
-            String[] languagesIds = languages.split(",");
-            for (String id : languagesIds) {
-                if (languageRepository.findByLanguageId(Integer.valueOf(id)) == null) {
-                    Map<String, String> errorResponse = new HashMap<>();
-                    errorResponse.put("message", "Language not found");
-                    return ResponseEntity.status(HttpStatus.CONFLICT)
-                            .body(errorResponse);
-                } else existingUser.setLanguages(languages);
+            String[] languageIds = languages.split(",");
+            List<Language> languageList = new ArrayList<>();
+            for (String id : languageIds) {
+                Language languageEntity = languageRepository.findById(Integer.valueOf(id)).orElseThrow(() -> {
+                    log.error("Language with ID '{}' not found for user ID {}", id, userId);
+                    return new RuntimeException("Language not found");
+                });
+                languageList.add(languageEntity);
             }
-        }existingUser.setLanguages(languages);
+            existingUser.setLanguages(languageList);
+        }
+
         if (cv != null) existingUser.setCv(cv);
 
         userRepository.save(existingUser);
@@ -153,6 +150,7 @@ public class UserService {
 
         return ResponseEntity.ok("User updated successfully");
     }
+
 
 
     public ResponseEntity<?> resetUser(Integer userId) {
@@ -169,51 +167,6 @@ public class UserService {
         return ResponseEntity.ok("User info reset successfully");
     }
 
-    public List<FilteredUser> filterUsers(List<Integer> positionIds,
-                                          List<Integer> seniorityIds,
-                                          List<Integer> cityIds,
-                                          List<Integer> roleIds,
-                                          List<Integer> languageIds) {
-
-        String languageIdsStr = languageIds.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(","));
-        List<User> users = userRepository.filterUsers(positionIds, seniorityIds, cityIds, roleIds, languageIdsStr);
-        List<FilteredUser> filteredUsers = new LinkedList<>();
-        for (User user: users) {
-            List<Language> languagesList = new LinkedList<>();
-            if (!languageIds.isEmpty()) {
-                String userLanguages = user.getLanguages();
-                String[] languagesIds = userLanguages.split(",");
-                List<String> languages = new ArrayList<>();
-                for (String languageId : languagesIds) {
-                    languages.add(languageRepository.findById(Integer.valueOf(languageId)).get().getLanguageName());
-                }
-                for (String languageName : languages){
-                    languagesList.add(languageRepository.findByLanguageName(languageName).orElseThrow(() -> new IllegalArgumentException("Language not found")));
-                }
-            }
-
-
-            FilteredUser filteredUser = new FilteredUser();
-            filteredUser.setUserId(user.getUserId());
-            filteredUser.setAvatar(user.getAvatar());
-            filteredUser.setFirstName(user.getFirstName());
-            filteredUser.setLastName(user.getLastName());
-            filteredUser.setEmail(user.getEmail());
-            filteredUser.setPosition(user.getPosition());
-            filteredUser.setSeniority(user.getSeniority());
-            filteredUser.setCity(user.getCity());
-            filteredUser.setLanguages(languagesList);
-            filteredUser.setCv(user.getCv());
-            filteredUser.setRole(user.getRole());
-
-            filteredUsers.add(filteredUser);
-        }
-        return filteredUsers;
-    }
-
-
     public Integer countUsersWithoutProject() {
         return userRepository.countByProjectIsNull();
     }
@@ -228,5 +181,18 @@ public class UserService {
                 .filter(user -> user.getCity() != null && user.getCity().getCountry() != null) // Ensure city and country are not null
                 .filter(user -> user.getCity().getCountry().getCountryName().equalsIgnoreCase(countryName)) // Filter by country name
                 .count(); // Count the filtered users
+    }
+
+    public User addLanguageToUser(Integer userId, Integer languageId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        Language language = languageRepository.findById(languageId).orElseThrow(() -> new RuntimeException("Language not found"));
+
+        user.addLanguage(language); // Associate the language with the user
+        return userRepository.save(user); // Persist the user with the new language association
+    }
+
+    public List<User> searchUsers(List<String> position, List<String> seniority, List<String> country, List<String> skill, List<String> languages) {
+        Specification<User> specification = UserSpecification.combinedFilter(position, seniority, country, skill, languages);
+        return userRepository.findAll(specification);
     }
 }

@@ -1,6 +1,9 @@
 package com.pentalog.KitKat.Controller.UserController;
 
 import com.pentalog.KitKat.DTO.*;
+import com.pentalog.KitKat.Entities.Language;
+import com.pentalog.KitKat.Entities.Position;
+import com.pentalog.KitKat.Entities.Seniority;
 import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Service.ResetPasswordService;
 import com.pentalog.KitKat.Service.PasswordHashing;
@@ -31,33 +34,15 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public User saveUser(@Valid @RequestBody UserDTO userDTO) throws Exception {
-        log.info("Received request to create user with email: {}", userDTO.getEmail());
-
+    public User saveUser(@Valid @RequestBody User user) throws Exception {
+        log.info("Received request to create user");
         try {
-            User user = new User();
-            user.setAvatar(userDTO.getAvatar());
-            user.setFirstName(userDTO.getFirstName());
-            user.setLastName(userDTO.getLastName());
-            user.setEmail(userDTO.getEmail());
-
-            byte[] hashedPassword = passwordHashing.getPasswordHash(userDTO.getPassword());
-            user.setPassword(BitSet.valueOf(hashedPassword)); // Store the hashed password
-
-            user.setPosition(userDTO.getPosition());
-            user.setSeniority(userDTO.getSeniority());
-            user.setCity(userDTO.getCity());
-            user.setLanguages(userDTO.getLanguages());
-            user.setCv(userDTO.getCv());
-            user.setRole(userDTO.getRole());
-
             User savedUser = this.userService.saveUser(user);
-
-            log.info("User successfully created with email: {}", userDTO.getEmail());
+            log.info("User created successfully");
             return savedUser;
         } catch (Exception e) {
-            log.error("Error creating user with email: {}. Exception: {}", userDTO.getEmail(), e.getMessage());
-            throw e; // Re-throw the exception after logging
+            log.error("Error creating user. Exception: {}", e.getMessage());
+            throw e;
         }
     }
 
@@ -128,17 +113,6 @@ public class UserController {
         return userService.resetUser(userId);
     }
 
-    @GetMapping("/filter")
-    public List<FilteredUser> filterUsers(
-            @RequestParam(required = false) List<Integer> positionIds,
-            @RequestParam(required = false) List<Integer> seniorityIds,
-            @RequestParam(required = false) List<Integer> cityIds,
-            @RequestParam(required = false) List<Integer> roleIds,
-            @RequestParam(required = false) List<Integer> languages
-    ) {
-        return userService.filterUsers(positionIds, seniorityIds, cityIds, roleIds, languages);
-    }
-
     @PostMapping("/save-skill-rating")
     public ResponseEntity<?> saveSkillRating(@RequestParam Integer userId,
                                              @RequestParam Integer skillId,
@@ -170,5 +144,23 @@ public class UserController {
         Map<String, Integer> response = new HashMap<>();
         response.put("count", count);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{userId}/languages")
+    public ResponseEntity<?> addLanguageToUser(@PathVariable Integer userId, @RequestParam Integer languageId) {
+        User updatedUser = userService.addLanguageToUser(userId, languageId);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<User>> searchUsers(
+            @RequestParam(required = false) List<String> position,
+            @RequestParam(required = false) List<String> seniority,
+            @RequestParam(required = false) List<String> country,
+            @RequestParam(required = false) List<String> skill,
+            @RequestParam(required = false) List<String> languages) {
+
+        List<User> filteredUsers = userService.searchUsers(position, seniority, country, skill, languages);
+        return ResponseEntity.ok(filteredUsers);
     }
 }

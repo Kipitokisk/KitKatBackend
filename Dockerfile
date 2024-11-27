@@ -17,7 +17,10 @@ WORKDIR /opt/demo
 ARG JAR_FILE="opt/demo/target/*.jar"
 COPY --from=stage1 /${JAR_FILE} /opt/demo/app.jar
 
+ENTRYPOINT ["java", "-jar", "/opt/demo/app.jar"]
+
+
 ENV APP_VERSION=${VERSION}
 
-
-ENTRYPOINT ["java", "-jar", "/opt/demo/app.jar"]
+#VOLUME /tmp
+#ENTRYPOINT ["java","-jar","/app.jar"]

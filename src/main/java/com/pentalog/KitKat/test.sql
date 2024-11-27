@@ -343,3 +343,8 @@ DO $$
     END $$;
 
 -- Confirm the data has been updated
+
+UPDATE t_users SET role_id = 3 WHERE user_id = 3;
+
+INSERT INTO t_roles (role_id, name)
+VALUES (3, 'ROLE_ADMIN')

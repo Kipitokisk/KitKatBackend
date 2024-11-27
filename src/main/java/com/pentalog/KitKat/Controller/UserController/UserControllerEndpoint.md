@@ -148,7 +148,7 @@ This endpoint updates user info.
 * `position` is the user's position (e.g. IT technician, Web developer).
 * `seniority` is the user's seniority (e.g. Junior, Mid, Senior).
 * `city` is the user's city.
-* `languages` is the user's languages.
+* `languages` is the user's languages ids as a string split by ",".
 * `cv` is the user's cv (Type: Bitset).
 ##### Request
 ```Curl
@@ -163,7 +163,7 @@ curl --location --request PUT 'http://localhost:8080/user/update' \
     "position": <user_position>,
     "seniority": <user_seniority>,
     "city": <user_city>,
-    "languages": <user_languages>,
+    "languages": <user_languages_ids>,
     "cv": <user_cv>
 }'
 ```
@@ -181,35 +181,11 @@ curl --location --request PUT 'http://localhost:8080/user/reset/<user_id_Integer
 ##### Response
 Upon execution, this endpoint returns the message "User info reset successfully".
 
-#### _Filter users_
+
+#### _Save skill rating_
 ##### Description
-This endpoint filters users via more categories.
-##### Request Body
-* `positionIds` is the user's position ids.
-* `seniorityIds` is the user's seniority ids.
-* `cityIds` is the user's city ids.
-* `roleIds` is the user's role ids.
-* `languages` is the user's languages ids.
+This endpoint creates a skill rating for a user.
 ##### Request
 ```Curl
-curl --location 'http://localhost:8080/user/filter?positionIds=<integer>&seniorityIds=<integer>&cityIds=<integer>&roleIds=<integer>&languages=<integer>' \
---header 'Cookie: JSESSIONID=3A8AEAC938CAA4929569EF5ACD4C3B3E'
-```
-##### Response
-Upon execution, this endpoint returns a JSON response with the following structure:
-``` JSON
-{
-    "userId": 1(INTEGER),
-    "avatar": null,
-    "firstName": null,
-    "lastName": null,
-    "email": <user_email>,
-    "position": null,
-    "seniority": null,
-    "city": null,
-    "languages": null,
-    "cv": null,
-    "role": null,
-    "project": null  
-}
+curl --location --request POST 'http:localhost:8080/user/save-skill-rating?userId=<user_id>&skillId=<skill_id>&rating=<rating_integer>'
 ```
