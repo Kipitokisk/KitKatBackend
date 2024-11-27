@@ -45,7 +45,6 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "language_id")
     )
-    @JsonIgnore
     private List<Language> languages = new ArrayList<>(); // Store languages as a list
     @Column
     private BitSet cv;
