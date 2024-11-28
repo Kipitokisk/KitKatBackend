@@ -189,3 +189,12 @@ This endpoint creates a skill rating for a user.
 ```Curl
 curl --location --request POST 'http:localhost:8080/user/save-skill-rating?userId=<user_id>&skillId=<skill_id>&rating=<rating_integer>'
 ```
+
+#### _Submit skill rating_
+##### Description
+This endpoint adds to a users skill rating.
+##### Request
+```Curl
+curl --location --request POST 'http://localhost:8080/user/submit-skill-rating?userId=2&skillId=3&rating=2'
+```
+

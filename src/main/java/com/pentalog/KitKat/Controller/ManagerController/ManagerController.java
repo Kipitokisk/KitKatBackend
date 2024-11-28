@@ -7,11 +7,16 @@ import com.pentalog.KitKat.Service.ProjectService;
 import com.pentalog.KitKat.Service.UserService;
 import com.pentalog.KitKat.Service.WorkersToManagerDashboardService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -20,10 +25,12 @@ public class ManagerController {
 
     private final WorkersToManagerDashboardService workersToManagerDashboardService;
     private final ProjectService projectService;
+    private final UserService userService;
 
     public ManagerController(WorkersToManagerDashboardService workersToManagerDashboardService, UserService userService, ProjectService projectService) {
         this.workersToManagerDashboardService = workersToManagerDashboardService;
         this.projectService = projectService;
+        this.userService = userService;
     }
 
     @GetMapping("/worker")
@@ -61,4 +68,36 @@ public class ManagerController {
         }
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<Page<User>> searchUsers(
+            @RequestParam(required = false) List<String> position,
+            @RequestParam(required = false) List<String> seniority,
+            @RequestParam(required = false) List<String> country,
+            @RequestParam(required = false) List<String> skill,
+            @RequestParam(required = false) List<String> languages,
+            @RequestParam(required = false) List<String> roles,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> filteredUsers = userService.searchUsers(position, seniority, country, skill, languages, roles, pageable);
+
+        return ResponseEntity.ok(filteredUsers);
+    }
+
+    @GetMapping("/without-project")
+    public ResponseEntity<Map<String, Integer>> countUsersWithoutProject() {
+        Integer count = userService.countUsersWithoutProject();
+        Map<String, Integer> response = new HashMap<>();
+        response.put("count", count);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/without-project/{countryName}")
+    public ResponseEntity<Map<String, Integer>> getUserCountWithoutProjectByCountry(@PathVariable String countryName) {
+        Integer count = userService.getUserCountWithoutProjectByCountry(countryName);
+        Map<String, Integer> response = new HashMap<>();
+        response.put("count", count);
+        return ResponseEntity.ok(response);
+    }
 }

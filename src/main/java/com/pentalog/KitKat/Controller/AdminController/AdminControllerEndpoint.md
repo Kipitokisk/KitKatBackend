@@ -89,7 +89,7 @@ Upon execution, this endpoint returns a JSON response with the following structu
 
 #### _Create Role_
 ##### Description
-This endpoint allows the ADMIN to create a new role(Admin, Worker, Manager).
+This endpoint allows the ADMIN to create a new role(ROLE_ADMIN, ROLE_USER, ROLE_MANAGER).
 ##### Request Body
 * `name` is the name needed for the new role.
 ``` JSON
@@ -138,5 +138,128 @@ Upon execution, this endpoint returns a JSON response with the following structu
 {
     "statusId": <status_id_Integer>,
     "name": <status_name>
+}
+```
+
+#### _Create Skill Type_
+##### Description
+This endpoint allows the ADMIN to create a new skill type(Tech, Soft). 
+##### Request Body
+``` Json
+{
+    "name": <skill_type_name>
+}
+```
+##### Request
+``` Curl
+curl --location 'http://localhost:8080/admin/save-skill-type' \
+--header 'Content-Type: application/json' \
+--data '{
+    "name": <skill_type_name>
+}'
+```
+##### Response
+Upon execution, this endpoint returns a JSON response with the following structure:
+``` JSON
+{
+    "skillTypeId": <skill_type_id_Integer>,
+    "name": <skill_type_name>
+}
+```
+
+#### _Create Skill_
+##### Description
+This endpoint allows the ADMIN to create a new skill (Java, JS, communication, teamwork etc.).
+##### Request Body
+``` Json
+{
+    "skillName": <skill_name>,
+    "skillType": <skill_type_name>
+}
+```
+##### Request
+``` Curl
+curl --location 'http://localhost:8080/admin/save-skill' \
+--header 'Content-Type: application/json' \
+--data '{
+    "skillName": <skill_name>,
+    "skillType": <skill_type_name>
+}'
+```
+##### Response
+Upon execution, this endpoint returns a JSON response with the following structure:
+``` JSON
+{
+    "skillId": <skill_id>,
+    "name": <skill_name>,
+    "skillType": {
+        "skillTypeId": <skill_type_id>,
+        "name": <skill_type_name>
+    }
+}
+```
+
+#### _Create Language_
+##### Description
+This endpoint allows the ADMIN to create a new language.
+##### Request Body
+``` Json
+{
+    "languageName": <language_name>
+}
+```
+##### Request
+``` Curl
+curl --location 'http://localhost:8080/admin/save-language' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiZW1haWwiOiJ2aWN0b3IucmV2ZW5vYy4wMEBnbWFpbC5jb20iLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczMjcyNzExNSwiZXhwIjoxNzMyOTg2MzE1fQ.l6F-RJOEkvR2IOldJ3ISbSj3g_TkFaF6rqVnM9FNP8o' \
+--data '{
+    "languageName": <language_name>
+}'
+```
+##### Response
+Upon execution, this endpoint returns a JSON response with the following structure:
+``` JSON
+{
+    "languageId": <language_id>,
+    "languageName": <language_name>
+}
+```
+
+#### _Accept User_
+##### Description
+This endpoint allows the ADMIN to accept a Pending user with a specific role.
+##### Request
+* `<user_role>` - the user role must exist in the db, and it must start with "ROLE_"
+``` Curl
+curl --location --request PUT 'http://localhost:8080/admin/accept-user/<user_id>>/<user_role>'
+```
+##### Response
+Upon execution, this endpoint returns a JSON response with the following structure:
+``` JSON
+{
+    "userId": <user_id>,
+    "avatar": <user_avatar>,
+    "firstName": <user_first_name>,
+    "lastName": <user_last_name>,
+    "email": <user_email>,
+    "password": <user_password_boolean>,
+    "position": <user_position>,
+    "seniority": <user_seniority>,
+    "city": <user_city>,
+    "languages": <user_languages>,
+    "cv": <user_cv>,
+    "project": <user_project>,
+    "skillRating": <user_skill_rating>,
+    "role": {
+        "roleId": <role_id>,
+        "name": <role_name>
+    },
+    "status": {
+        "statusId": <status_id>,
+        "name": <status_name>
+    },
+    "managerId": <manager_id>,
+    "oauthToken": <oauthtoken>
 }
 ```

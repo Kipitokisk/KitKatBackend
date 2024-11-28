@@ -5,7 +5,7 @@ INSERT INTO t_roles (role_id, name) VALUES (3, 'ROLE_MANAGER');
 DELETE FROM t_users WHERE user_id = 1;
 
 UPDATE t_users
-SET role_id = 1
+SET role_id = 3
 WHERE user_id = 2;
 
 INSERT INTO t_users (first_name, last_name, email, status_id)

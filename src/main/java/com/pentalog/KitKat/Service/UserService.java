@@ -5,6 +5,8 @@ import com.pentalog.KitKat.Entities.*;
 import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Repository.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -80,7 +82,7 @@ public class UserService {
         user.setProject(null);
         user.setSkillRating(null);
         user.setRole(null);
-        user.setStatus(statusRepository.getReferenceById(2));
+        user.setStatus(statusRepository.findByName("PENDING").orElseThrow(() -> new RuntimeException("Status not found")));
 
         // Save the user and return the persisted entity
         return userRepository.save(user);
@@ -191,10 +193,12 @@ public class UserService {
         return userRepository.save(user); // Persist the user with the new language association
     }
 
-    public List<User> searchUsers(List<String> position, List<String> seniority, List<String> country, List<String> skill, List<String> languages) {
-        Specification<User> specification = UserSpecification.combinedFilter(position, seniority, country, skill, languages);
-        return userRepository.findAll(specification);
+    public Page<User> searchUsers(List<String> position, List<String> seniority, List<String> country,
+                                  List<String> skill, List<String> languages, List<String> roles, Pageable pageable) {
+        Specification<User> specification = UserSpecification.combinedFilter(position, seniority, country, skill, languages, roles);
+        return userRepository.findAll(specification, pageable);
     }
+
 
     public User acceptUser(Integer userId, String role) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));

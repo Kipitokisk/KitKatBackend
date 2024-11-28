@@ -130,37 +130,9 @@ public class UserController {
         return skillRatingService.submitRating(userId, skillId, newRating);
     }
 
-    @GetMapping("/without-project")
-    public ResponseEntity<Map<String, Integer>> countUsersWithoutProject() {
-        Integer count = userService.countUsersWithoutProject();
-        Map<String, Integer> response = new HashMap<>();
-        response.put("count", count);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/without-project/{countryName}")
-    public ResponseEntity<Map<String, Integer>> getUserCountWithoutProjectByCountry(@PathVariable String countryName) {
-        Integer count = userService.getUserCountWithoutProjectByCountry(countryName);
-        Map<String, Integer> response = new HashMap<>();
-        response.put("count", count);
-        return ResponseEntity.ok(response);
-    }
-
     @PostMapping("/{userId}/languages")
     public ResponseEntity<?> addLanguageToUser(@PathVariable Integer userId, @RequestParam Integer languageId) {
         User updatedUser = userService.addLanguageToUser(userId, languageId);
         return ResponseEntity.ok(updatedUser);
-    }
-
-    @GetMapping("/filter")
-    public ResponseEntity<List<User>> searchUsers(
-            @RequestParam(required = false) List<String> position,
-            @RequestParam(required = false) List<String> seniority,
-            @RequestParam(required = false) List<String> country,
-            @RequestParam(required = false) List<String> skill,
-            @RequestParam(required = false) List<String> languages) {
-
-        List<User> filteredUsers = userService.searchUsers(position, seniority, country, skill, languages);
-        return ResponseEntity.ok(filteredUsers);
     }
 }
