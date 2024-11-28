@@ -256,3 +256,92 @@ curl --location 'http://localhost:8080/manager/without-project/<country_name>'
   "count": 1
 }
 ```
+
+#### _Create Project_
+##### Description
+This endpoint allows a MANAGER to create a project.
+##### Request Body
+* `finishDate` - this date should be format "yyyy-MM-ddTHH:mm:ss"
+```Json
+{
+  "projectName": "Kitkat",
+  "managerId": 2,
+  "finishDate": "2024-01-01T22:22:22"
+} 
+```
+##### Request
+```Curl
+curl --location 'http://localhost:8080/manager/save-project' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiZW1haWwiOiJ2aWN0b3IucmV2ZW5vYy4wMEBnbWFpbC5jb20iLCJyb2xlIjoiUk9MRV9NQU5BR0VSIiwiaWF0IjoxNzMyODE5OTkzLCJleHAiOjE3MzMwNzkxOTN9.zSxjzSC6biaPhc8ApXUKnJFK3GtCbdYalJdlCzcbiQs' \
+--header 'Cookie: JSESSIONID=D32931B7950AB70ED9CC50EE7F1A782B' \
+--data '{
+    "projectName": "Kitkat",
+    "managerId": 2,
+    "finishDate": "2024-01-01T22:22:22"
+}'
+```
+##### Response
+```Json
+{
+    "projectId": 1,
+    "projectName": "Kitkat",
+    "manager": {
+        "userId": 2,
+        "avatar": null,
+        "firstName": null,
+        "lastName": null,
+        "email": "victor.revenoc.00@gmail.com",
+        "password": {
+            "empty": false
+        },
+        "position": null,
+        "seniority": null,
+        "city": null,
+        "languages": [],
+        "cv": null,
+        "project": null,
+        "skillRating": [
+            {
+                "skillRatingId": 1,
+                "skill": {
+                    "skillId": 3,
+                    "name": "Java",
+                    "skillType": {
+                        "skillTypeId": 2,
+                        "name": "Tech"
+                    }
+                },
+                "ratingSum": 5,
+                "nrOfReviews": 5
+            },
+            {
+                "skillRatingId": 2,
+                "skill": {
+                    "skillId": 4,
+                    "name": "JS",
+                    "skillType": {
+                        "skillTypeId": 2,
+                        "name": "Tech"
+                    }
+                },
+                "ratingSum": 3,
+                "nrOfReviews": 2
+            }
+        ],
+        "role": {
+            "roleId": 3,
+            "name": "ROLE_MANAGER"
+        },
+        "status": {
+            "statusId": 2,
+            "name": "PENDING"
+        },
+        "managerId": null,
+        "oauthToken": null
+    },
+    "startDate": "2024-11-28T20:07:55.009480382",
+    "finishDate": "2024-01-01T22:22:22",
+    "status": true
+}
+```

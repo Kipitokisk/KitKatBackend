@@ -4,6 +4,8 @@ import com.pentalog.KitKat.Entities.User.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "t_projects")
@@ -22,6 +24,8 @@ public class Project {
     private LocalDateTime finishDate;
     @Column
     private Boolean status;
+    @OneToMany(mappedBy = "project")
+    private List<User> workers = new ArrayList<>();
 
     public Project() {
     }
@@ -81,6 +85,14 @@ public class Project {
         this.finishDate = finishDate;
     }
 
+    public List<User> getWorkers() {
+        return workers;
+    }
+
+    public void setWorkers(List<User> workers) {
+        this.workers = workers;
+    }
+
     @Override
     public String toString() {
         return "Project{" +
@@ -90,6 +102,7 @@ public class Project {
                 ", startDate=" + startDate +
                 ", finishDate=" + finishDate +
                 ", status=" + status +
+                ", workers=" + workers +
                 '}';
     }
 }

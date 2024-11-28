@@ -1,7 +1,10 @@
 package com.pentalog.KitKat.Controller.ManagerController;
 
+import com.pentalog.KitKat.DTO.CreateProjectDTO;
 import com.pentalog.KitKat.DTO.WorkerProjectDTO;
 import com.pentalog.KitKat.DTO.WorkerToManagerDashboardDTO;
+import com.pentalog.KitKat.Entities.Language;
+import com.pentalog.KitKat.Entities.Project;
 import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Service.ProjectService;
 import com.pentalog.KitKat.Service.UserService;
@@ -99,5 +102,10 @@ public class ManagerController {
         Map<String, Integer> response = new HashMap<>();
         response.put("count", count);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/save-project")
+    public ResponseEntity<?> saveProject(@RequestBody CreateProjectDTO project) {
+        return projectService.saveProject(project);
     }
 }
