@@ -41,7 +41,7 @@ public class User {
     private City city;
     @ManyToMany
     @JoinTable(
-            name = "user_languages",
+            name = "t_user_languages",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "language_id")
     )
