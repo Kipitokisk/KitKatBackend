@@ -19,12 +19,12 @@ public class Seniority {
         this.name = name;
     }
 
-    public Integer getSeniortyId() {
+    public Integer getSeniorityId() {
         return seniorityId;
     }
 
-    public void setSeniortyId(Integer seniortyId) {
-        this.seniorityId = seniortyId;
+    public void setSeniorityId(Integer seniorityId) {
+        this.seniorityId = seniorityId;
     }
 
     public String getName() {
