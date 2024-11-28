@@ -195,4 +195,11 @@ public class UserService {
         Specification<User> specification = UserSpecification.combinedFilter(position, seniority, country, skill, languages);
         return userRepository.findAll(specification);
     }
+
+    public User acceptUser(Integer userId, String role) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setStatus(statusRepository.findByName("ACCEPTED").orElseThrow(() -> new RuntimeException("Status not found")));
+        user.setRole(roleRepository.findByName(role).orElseThrow(() -> new RuntimeException("Role not found")));
+        return userRepository.save(user);
+    }
 }
