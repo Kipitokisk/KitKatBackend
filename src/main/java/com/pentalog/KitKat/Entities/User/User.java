@@ -52,7 +52,7 @@ public class User {
     @JoinColumn(name = "project_id")
     private Project project;
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private List<SkillRating> skillRating;
+    private List<SkillRating> skillRating = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;

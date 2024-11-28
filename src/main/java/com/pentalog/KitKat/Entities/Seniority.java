@@ -7,24 +7,24 @@ import jakarta.persistence.*;
 public class Seniority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer seniortyId;
+    private Integer seniorityId;
     @Column(unique = true)
     private String name;
 
     public Seniority() {
     }
 
-    public Seniority(Integer seniortyId, String name) {
-        this.seniortyId = seniortyId;
+    public Seniority(Integer seniorityId, String name) {
+        this.seniorityId = seniorityId;
         this.name = name;
     }
 
     public Integer getSeniortyId() {
-        return seniortyId;
+        return seniorityId;
     }
 
     public void setSeniortyId(Integer seniortyId) {
-        this.seniortyId = seniortyId;
+        this.seniorityId = seniortyId;
     }
 
     public String getName() {
@@ -38,7 +38,7 @@ public class Seniority {
     @Override
     public String toString() {
         return "Seniority{" +
-                "seniortyId=" + seniortyId +
+                "seniorityId=" + seniorityId +
                 ", name='" + name + '\'' +
                 '}';
     }

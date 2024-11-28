@@ -4,3 +4,5 @@ VALUES
     (2, null, 'Victor', 'Revenco', 'victorRevenco@email.com', null, 2, 1, 2, null, null, 2, 1, null, null),
     (3, null, 'Dan', 'Macrii', 'danMacrii@email.com', null, 3, 3, 3, null, null, 3, 1, null, null),
     (4, null, 'Tudor', 'Popov', 'tudorPopov@email.com', null, null, null, null, null, null, 1, 1, null, null);
+
+SELECT setval('t_users_user_id_seq', (SELECT MAX(user_id) FROM t_users));
