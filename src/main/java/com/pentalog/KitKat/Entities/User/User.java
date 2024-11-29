@@ -2,6 +2,7 @@ package com.pentalog.KitKat.Entities.User;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pentalog.KitKat.Entities.*;
 import jakarta.persistence.*;
@@ -50,6 +51,7 @@ public class User {
     private BitSet cv;
     @ManyToOne()
     @JoinColumn(name = "project_id")
+    @JsonIgnoreProperties("workers")
     private Project project;
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<SkillRating> skillRating = new ArrayList<>();

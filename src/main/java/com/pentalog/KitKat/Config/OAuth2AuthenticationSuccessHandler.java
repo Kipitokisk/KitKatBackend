@@ -3,6 +3,8 @@ package com.pentalog.KitKat.Config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pentalog.KitKat.Entities.User.JwtTokenUtil;
 import com.pentalog.KitKat.Entities.User.User;
+import com.pentalog.KitKat.Repository.RoleRepository;
+import com.pentalog.KitKat.Repository.StatusRepository;
 import com.pentalog.KitKat.Repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,11 +26,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private final JwtTokenUtil jwtTokenUtil;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final StatusRepository statusRepository;
 
     @Autowired
-    public OAuth2AuthenticationSuccessHandler(JwtTokenUtil jwtTokenUtil, UserRepository userRepository) {
+    public OAuth2AuthenticationSuccessHandler(JwtTokenUtil jwtTokenUtil, UserRepository userRepository, RoleRepository roleRepository, StatusRepository statusRepository) {
         this.jwtTokenUtil = jwtTokenUtil;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.statusRepository = statusRepository;
     }
 
     @Override
@@ -39,9 +45,17 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
             String email = (String) oauth2User.getAttributes().get("email");
 
-            // Fetch the user from the database
             User dbUser = userRepository.findUserByEmail(email);
 
+            if (dbUser.getRole() == null) {
+                dbUser.setRole(roleRepository.findByName("ROLE_USER").orElseThrow(() -> new RuntimeException("Role not found.")));
+            }
+            if (dbUser.getStatus() == null) {
+                dbUser.setStatus(statusRepository.findByName("PENDING").orElseThrow(() -> new RuntimeException("Status not found")));
+            }
+
+            // Save the updated user back to the database
+            userRepository.save(dbUser);
             // Generate JWT token for the user
             String jwt = jwtTokenUtil.generateToken(dbUser.getUserId().toString(), dbUser.getEmail(), dbUser.getRole().getName());
 

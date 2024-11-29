@@ -1,12 +1,8 @@
 package com.pentalog.KitKat.Controller.UserController;
 
 import com.pentalog.KitKat.DTO.*;
-import com.pentalog.KitKat.Entities.Language;
-import com.pentalog.KitKat.Entities.Position;
-import com.pentalog.KitKat.Entities.Seniority;
 import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Service.ResetPasswordService;
-import com.pentalog.KitKat.Service.PasswordHashing;
 import com.pentalog.KitKat.Service.SkillRatingService;
 import com.pentalog.KitKat.Service.UserService;
 import jakarta.validation.Valid;
@@ -22,13 +18,11 @@ import java.util.*;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
-    private final PasswordHashing passwordHashing;
     private final ResetPasswordService resetPasswordService;
     private final SkillRatingService skillRatingService;
 
-    public UserController(UserService userService, PasswordHashing passwordHashing, ResetPasswordService resetPasswordService, SkillRatingService skillRatingService) {
+    public UserController(UserService userService, ResetPasswordService resetPasswordService, SkillRatingService skillRatingService) {
         this.userService = userService;
-        this.passwordHashing = passwordHashing;
         this.resetPasswordService = resetPasswordService;
         this.skillRatingService = skillRatingService;
     }
@@ -90,7 +84,6 @@ public class UserController {
     @PutMapping("/update")
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateDTO userUpdateDTO) {
         log.info("Received request to update user with ID: {}", userUpdateDTO.getUserId());
-
         try {
             return userService.updateUser(userUpdateDTO.getUserId(),
                     userUpdateDTO.getFirstName(),
@@ -110,7 +103,13 @@ public class UserController {
 
     @PutMapping("/reset/{id}")
     public ResponseEntity<?> resetUser(@PathVariable("id") Integer userId) {
-        return userService.resetUser(userId);
+        log.info("Received request to reset user with ID: {}", userId);
+        try {
+            return userService.resetUser(userId);
+        } catch (Exception e) {
+            log.error("Error resetting user with ID: {}", userId, e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to reset user: " + e.getMessage());
+        }
     }
 
     @PostMapping("/save-skill-rating")

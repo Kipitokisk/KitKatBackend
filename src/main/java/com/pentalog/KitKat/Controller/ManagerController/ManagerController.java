@@ -2,9 +2,6 @@ package com.pentalog.KitKat.Controller.ManagerController;
 
 import com.pentalog.KitKat.DTO.CreateProjectDTO;
 import com.pentalog.KitKat.DTO.WorkerProjectDTO;
-import com.pentalog.KitKat.DTO.WorkerToManagerDashboardDTO;
-import com.pentalog.KitKat.Entities.Language;
-import com.pentalog.KitKat.Entities.Project;
 import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Service.ProjectService;
 import com.pentalog.KitKat.Service.UserService;
@@ -36,12 +33,6 @@ public class ManagerController {
         this.userService = userService;
     }
 
-    @GetMapping("/worker")
-    public ResponseEntity<?> employeesDashboard() {
-        log.info("Request to get all workers");
-        return ResponseEntity.ok(workersToManagerDashboardService.returnWorkersToManagerDashboard());
-    }
-
     @GetMapping("/worker/{id}")
     public ResponseEntity<?> getWorkerByEmail(@PathVariable Integer id) {
         log.info("Received request to find user by id: {}", id);
@@ -56,15 +47,9 @@ public class ManagerController {
 
     @PostMapping("/worker/project")
     public ResponseEntity<?> setProject(@RequestBody WorkerProjectDTO body) {
-        log.info("Received request to set project: {}", body);
-
+        log.info("Received request to add user with id {} to project with id {}", body.getUserId(), body.getProjectId());
         try {
-            boolean isProjectSet = projectService.setProject(body.getWorkerId(), body.getProjectId());
-            if (isProjectSet) {
-                return ResponseEntity.ok("Project set successfully.");
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to set project.");
-            }
+            return projectService.setProject(body.getUserId(), body.getProjectId());
         } catch (Exception e) {
             log.error("Error occurred while setting project: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while setting the project.");

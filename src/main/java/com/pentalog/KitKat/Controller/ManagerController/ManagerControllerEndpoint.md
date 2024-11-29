@@ -1,37 +1,7 @@
 ### **Manager Controller**
-#### _Workers_
+#### _Get Worker By Email_
 ##### Description
-This endpoint gets all users with "Worker" as role from database.
-##### Request
-````Curl
-curl --location 'http://localhost:8080/manager/worker'
-````
-##### Response
-Upon execution, the response is a JSON with all users with role "Worker"
-````JSON
-[
-    {
-        "id" : "<int>",
-        "name": "<string>",
-        "surname": "<string>",
-        "email": "<string>",
-        "avatar": "<bit_array>",
-        "seniority": "<string>",
-        "role": "<string>",
-        "languages": "<string_list>",
-        "skills": "<string_list>",
-        "city" : "<string>"
-    }
-]
-````
-* `avatar` is the users avatar as BitSet.
-* `languages` is a string list of worker's languages
-* `skills` is a string list of worker's skills
-* `city` is a string "country, city"
-
-#### _Worker {id}_
-##### Description
-This endpoint returns information about a worker by its ID
+This endpoint returns information about a worker by its ID.
 ##### Request
 ````Curl
 curl --location 'http://localhost:8080/manager/worker/{id}'
@@ -75,7 +45,7 @@ Upon execution, the response is a JSON with information about all projects
   {
     "projectId" : "<int>",
     "projectName" : "<string>",
-    "manager" : "<string>",
+    "managerId" : "<string>",
     "startDate" : "<LocalDateTime>",
     "finishDate" : "<LocalDateTime>",
     "status" : "<boolean>"

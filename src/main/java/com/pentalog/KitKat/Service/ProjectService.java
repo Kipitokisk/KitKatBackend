@@ -30,7 +30,6 @@ public class ProjectService {
 
     public ResponseEntity<?> saveProject(CreateProjectDTO createProjectDTO) {
         try {
-            // Check if the position already exists
             Optional<Project> existingProject = this.projectRepository.findByProjectName(createProjectDTO.getProjectName());
             if (existingProject.isPresent()) {
                 log.warn("Project already exists: {}", createProjectDTO.getProjectName());
@@ -108,28 +107,24 @@ public class ProjectService {
         return projectDTOs;
     }
 
-    public boolean setProject(Integer workerId, Integer projectId) {
-        User user = userRepository.findById(workerId).get();
-        if(user == null){
-            return false;
-        }
-        else{
-            if(projectId == 0)
-            {
-                user.setProject(null);
-                userRepository.save(user);
-                log.info("User with id {} removed from project. ", workerId);
-                return true;
-            }
-            if(projectRepository.findById(projectId) == null) {
-                return false;
-            }
-            else{
-                user.setProject(projectRepository.findById(projectId).get());
-                userRepository.save(user);
-                log.info("Project set to user with id: {} ", workerId);
-                return true;
-            }
+    public ResponseEntity<?> setProject(Integer userId, Integer projectId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        if (projectId == 0) {
+            Project project = projectRepository.findById(projectId).orElseThrow(() -> new RuntimeException("Project not found"));
+            project.getWorkers().remove(user);
+            projectRepository.save(project);
+            user.setProject(null);
+            userRepository.save(user);
+            log.info("User with id {} removed from project with id {}.", userId, projectId);
+            return ResponseEntity.ok(user);
+        } else {
+            Project project = projectRepository.findById(projectId).orElseThrow(() -> new RuntimeException("Project not found"));
+            project.getWorkers().add(user);
+            projectRepository.save(project);
+            user.setProject(project);
+            userRepository.save(user);
+            log.info("User with id {} added to project with id {}.", userId, projectId);
+            return ResponseEntity.ok(user);
         }
     }
 

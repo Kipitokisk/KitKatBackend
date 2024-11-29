@@ -1,5 +1,8 @@
 package com.pentalog.KitKat.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pentalog.KitKat.Entities.User.User;
 import jakarta.persistence.*;
 
@@ -16,7 +19,7 @@ public class Project {
     @Column(unique = true)
     private String projectName;
     @OneToOne()
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "manager_id")
     private User manager;
     @Column
     private LocalDateTime startDate;
