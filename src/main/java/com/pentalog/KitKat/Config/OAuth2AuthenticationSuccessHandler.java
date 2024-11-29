@@ -6,7 +6,6 @@ import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.ServletException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -16,8 +15,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 @Slf4j
@@ -51,18 +48,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             // Generate JWT token for the user
             String jwt = jwtTokenUtil.generateToken(dbUser.getUserId().toString(), dbUser.getEmail(), dbUser.getRole().getName());
 
-            // Prepare the response data (send user info and JWT to frontend)
-            Map<String, Object> res = new HashMap<>();
-            res.put("id", dbUser.getUserId());
-            res.put("email", dbUser.getEmail());
-            res.put("role", dbUser.getRole().getName());
-            res.put("jwt", jwt);
+            // Prepare the redirect URL with the JWT token as a parameter
+            String redirectUrl = "http://localhost:5173/"; // You can change this to your desired frontend URL
+            redirectUrl += "?jwt=" + jwt; // Append the JWT as a query parameter
 
-            // Send JSON response back to frontend
-            response.setContentType("application/json");
-            response.getWriter().write(new ObjectMapper().writeValueAsString(res));
-
+            // Log the successful login
             log.info("User logged in successfully: {}", email);
+
+            // Redirect to the frontend with the JWT token
+            response.sendRedirect(redirectUrl);
 
         } catch (IOException e) {
             log.error("Error writing response: {}", e.getMessage());
@@ -70,4 +64,3 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
     }
 }
-
