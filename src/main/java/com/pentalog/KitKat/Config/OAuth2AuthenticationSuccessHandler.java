@@ -64,10 +64,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
             log.info("User logged in successfully: {}", email);
 
-            // Redirect after sending JSON (this could be done via a client-side redirect after capturing the JSON)
-            response.setHeader("Location", "http://localhost:5173/"); // Adjust this URL as needed
-            response.setStatus(HttpServletResponse.SC_FOUND); // 302 redirect
-
         } catch (IOException e) {
             log.error("Error writing response: {}", e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
