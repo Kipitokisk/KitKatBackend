@@ -3,11 +3,10 @@ package com.pentalog.KitKat.Config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pentalog.KitKat.Entities.User.JwtTokenUtil;
 import com.pentalog.KitKat.Entities.User.User;
-import com.pentalog.KitKat.Repository.RoleRepository;
-import com.pentalog.KitKat.Repository.StatusRepository;
 import com.pentalog.KitKat.Repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -26,15 +25,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private final JwtTokenUtil jwtTokenUtil;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final StatusRepository statusRepository;
 
     @Autowired
-    public OAuth2AuthenticationSuccessHandler(JwtTokenUtil jwtTokenUtil, UserRepository userRepository, RoleRepository roleRepository, StatusRepository statusRepository) {
+    public OAuth2AuthenticationSuccessHandler(JwtTokenUtil jwtTokenUtil, UserRepository userRepository) {
         this.jwtTokenUtil = jwtTokenUtil;
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.statusRepository = statusRepository;
     }
 
     @Override
@@ -45,17 +40,14 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
             String email = (String) oauth2User.getAttributes().get("email");
 
+            // Retrieve the user from the database
             User dbUser = userRepository.findUserByEmail(email);
-
-            if (dbUser.getRole() == null) {
-                dbUser.setRole(roleRepository.findByName("ROLE_USER").orElseThrow(() -> new RuntimeException("Role not found.")));
-            }
-            if (dbUser.getStatus() == null) {
-                dbUser.setStatus(statusRepository.findByName("PENDING").orElseThrow(() -> new RuntimeException("Status not found")));
+            if (dbUser == null) {
+                log.error("User not found after OAuth2 authentication for: {}", email);
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                return;
             }
 
-            // Save the updated user back to the database
-            userRepository.save(dbUser);
             // Generate JWT token for the user
             String jwt = jwtTokenUtil.generateToken(dbUser.getUserId().toString(), dbUser.getEmail(), dbUser.getRole().getName());
 
@@ -66,15 +58,23 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             res.put("role", dbUser.getRole().getName());
             res.put("jwt", jwt);
 
+            // Log the JSON response to the console
+            String jsonResponse = new ObjectMapper().writeValueAsString(res);
+            log.info("Authentication success, response: {}", jsonResponse);  // Log the response
+
             // Set the response content type and write the JWT to the response body
             response.setContentType("application/json");
-            response.getWriter().write(new ObjectMapper().writeValueAsString(res)); // Convert Map to JSON and write
+            response.getWriter().write(jsonResponse);  // Write the JSON response to the body
 
             log.info("User logged in successfully: {}", email);
-        } catch (IOException e) {
-            log.error("Error writing response: {}", e.getMessage());
-            // Handle the error (e.g., send a specific error response)
+
+            // Redirect to the desired URL after successful login
+            setDefaultTargetUrl("http://localhost:5173/");  // Modify this URL to your desired redirect URL
+            super.onAuthenticationSuccess(request, response, authentication); // Perform the redirect
+
+        } catch (IOException | ServletException e) {  // Catch both IOException and ServletException
+            log.error("Error during authentication: {}", e.getMessage());
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
-
 }
