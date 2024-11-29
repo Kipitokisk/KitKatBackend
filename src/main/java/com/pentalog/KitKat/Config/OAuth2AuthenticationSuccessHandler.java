@@ -49,7 +49,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             String jwt = jwtTokenUtil.generateToken(dbUser.getUserId().toString(), dbUser.getEmail(), dbUser.getRole().getName());
 
             // Prepare the redirect URL with the JWT token as a parameter
-            String redirectUrl = "http://localhost:5173/"; // You can change this to your desired frontend URL
+            String redirectUrl = "http://localhost:5173/dashboard"; // You can change this to your desired frontend URL
             redirectUrl += "?jwt=" + jwt; // Append the JWT as a query parameter
 
             // Log the successful login
