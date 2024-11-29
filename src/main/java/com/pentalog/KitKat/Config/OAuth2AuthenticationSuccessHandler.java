@@ -33,7 +33,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         try {
             OAuth2AuthenticationToken oauth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
             OAuth2User oauth2User = oauth2AuthenticationToken.getPrincipal();
@@ -51,30 +51,27 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             // Generate JWT token for the user
             String jwt = jwtTokenUtil.generateToken(dbUser.getUserId().toString(), dbUser.getEmail(), dbUser.getRole().getName());
 
-            // Prepare the response data
+            // Prepare the response data (send user info and JWT to frontend)
             Map<String, Object> res = new HashMap<>();
             res.put("id", dbUser.getUserId());
             res.put("email", dbUser.getEmail());
             res.put("role", dbUser.getRole().getName());
             res.put("jwt", jwt);
 
-            // Log the JSON response to the console
-            String jsonResponse = new ObjectMapper().writeValueAsString(res);
-            log.info("Authentication success, response: {}", jsonResponse);  // Log the response
-
-            // Set the response content type and write the JWT to the response body
+            // Send JSON response back to frontend
             response.setContentType("application/json");
-            response.getWriter().write(jsonResponse);  // Write the JSON response to the body
+            response.getWriter().write(new ObjectMapper().writeValueAsString(res));
 
             log.info("User logged in successfully: {}", email);
 
-            // Redirect to the desired URL after successful login
-            setDefaultTargetUrl("http://localhost:5173/");  // Modify this URL to your desired redirect URL
-            super.onAuthenticationSuccess(request, response, authentication); // Perform the redirect
+            // Redirect after sending JSON (this could be done via a client-side redirect after capturing the JSON)
+            response.setHeader("Location", "http://localhost:5173/"); // Adjust this URL as needed
+            response.setStatus(HttpServletResponse.SC_FOUND); // 302 redirect
 
-        } catch (IOException | ServletException e) {  // Catch both IOException and ServletException
-            log.error("Error during authentication: {}", e.getMessage());
+        } catch (IOException e) {
+            log.error("Error writing response: {}", e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 }
+
