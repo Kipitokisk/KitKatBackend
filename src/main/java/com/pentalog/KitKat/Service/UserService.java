@@ -75,7 +75,7 @@ public class UserService {
         user.setCv(null);
         user.setProject(null);
         user.setSkillRating(null);
-        user.setRole(null);
+        user.setRole(roleRepository.findByName("ROLE_USER").orElseThrow(() -> new Exception("Role Not Found")));
         user.setStatus(statusRepository.findByName("PENDING").orElseThrow(() -> new RuntimeException("Status not found")));
 
         return userRepository.save(user);
