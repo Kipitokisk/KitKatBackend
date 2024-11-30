@@ -1,23 +1,23 @@
 package com.pentalog.KitKat.DTO;
 
 public class WorkerProjectDTO {
-    private Integer workerId;
+    private Integer userId;
     private Integer projectId;
 
     public WorkerProjectDTO() {
     }
 
-    public WorkerProjectDTO(Integer workerId, Integer projectId) {
-        this.workerId = workerId;
+    public WorkerProjectDTO(Integer userId, Integer projectId) {
+        this.userId = userId;
         this.projectId = projectId;
     }
 
-    public Integer getWorkerId() {
-        return workerId;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setWorkerId(Integer workerId) {
-        this.workerId = workerId;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public Integer getProjectId() {

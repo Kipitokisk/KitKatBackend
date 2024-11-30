@@ -5,6 +5,8 @@ import com.pentalog.KitKat.Entities.*;
 import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Repository.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,12 +25,9 @@ public class UserService {
     private final SeniorityRepository seniorityRepository;
     private final LanguageRepository languageRepository;
     private final RoleRepository roleRepository;
-    private final SkillRatingRepository skillRatingRepository;
-    private final CountryRepository countryRepository;
-    private final SkillRepository skillRepository;
 
 
-    public UserService(UserRepository userRepository, PasswordHashing passwordHashing, StatusRepository statusRepository, CityRepository cityRepository, PositionRepository positionRepository, SeniorityRepository seniorityRepository, LanguageRepository languageRepository, RoleRepository roleRepository, SkillRatingRepository skillRatingRepository, CountryRepository countryRepository, SkillRepository skillRepository) {
+    public UserService(UserRepository userRepository, PasswordHashing passwordHashing, StatusRepository statusRepository, CityRepository cityRepository, PositionRepository positionRepository, SeniorityRepository seniorityRepository, LanguageRepository languageRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.passwordHashing = passwordHashing;
         this.statusRepository = statusRepository;
@@ -37,9 +36,6 @@ public class UserService {
         this.seniorityRepository = seniorityRepository;
         this.languageRepository = languageRepository;
         this.roleRepository = roleRepository;
-        this.skillRatingRepository = skillRatingRepository;
-        this.countryRepository = countryRepository;
-        this.skillRepository = skillRepository;
     }
 
     public User saveUser(User user) {
@@ -47,42 +43,41 @@ public class UserService {
         log.info("User with id: {} saved successfully", savedUser.getUserId());
         return savedUser;
     }
+
     public Optional<User> findUserByOauthToken(String oauthToken) {return userRepository.findUserByOauthToken(oauthToken);}
+
     public Optional<User> findUserById(Integer id) {return userRepository.findById(id);}
+
     public User findUserByEmail(String email) {return userRepository.findUserByEmail(email);}
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     public User registerNewUserAccount(UserForRegistrationDTO userForRegistrationDTO) throws Exception {
-        // Check if a user with the provided email already exists
         if (userRepository.findUserByEmail(userForRegistrationDTO.getEmail()) != null) {
             throw new Exception("There is already an account with this email");
         }
 
-        // Create a new User object and set default fields
         User user = new User();
         user.setAvatar(null);
         user.setFirstName(null);
         user.setLastName(null);
         user.setEmail(userForRegistrationDTO.getEmail());
 
-        // Hash password (using salt from the environment)
         byte[] hashedPassword = passwordHashing.getPasswordHash(userForRegistrationDTO.getPassword());
-        user.setPassword(BitSet.valueOf(hashedPassword)); // Store the hashed password
+        user.setPassword(BitSet.valueOf(hashedPassword));
 
-        // Set other user properties
         user.setPosition(null);
         user.setSeniority(null);
         user.setCity(null);
         user.setLanguages(null);
         user.setCv(null);
         user.setProject(null);
-        user.setSkillInfo(null);
-        user.setRole(null);
-        user.setStatus(statusRepository.getReferenceById(2));
+        user.setSkillRating(null);
+        user.setRole(roleRepository.findByName("ROLE_USER").orElseThrow(() -> new Exception("Role Not Found")));
+        user.setStatus(statusRepository.findByName("PENDING").orElseThrow(() -> new RuntimeException("Status not found")));
 
-        // Save the user and return the persisted entity
         return userRepository.save(user);
     }
 
@@ -172,27 +167,34 @@ public class UserService {
     }
 
     public Integer getUserCountWithoutProjectByCountry(String countryName) {
-        // Retrieve all users
         List<User> users = userRepository.findAll();
 
-        // Count users without a project for the given country
         return (int) users.stream()
                 .filter(user -> user.getProject() == null) // Filter users without a project
                 .filter(user -> user.getCity() != null && user.getCity().getCountry() != null) // Ensure city and country are not null
                 .filter(user -> user.getCity().getCountry().getCountryName().equalsIgnoreCase(countryName)) // Filter by country name
-                .count(); // Count the filtered users
+                .count();
     }
 
     public User addLanguageToUser(Integer userId, Integer languageId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         Language language = languageRepository.findById(languageId).orElseThrow(() -> new RuntimeException("Language not found"));
 
-        user.addLanguage(language); // Associate the language with the user
-        return userRepository.save(user); // Persist the user with the new language association
+        user.addLanguage(language);
+        return userRepository.save(user);
     }
 
-    public List<User> searchUsers(List<String> position, List<String> seniority, List<String> country, List<String> skill, List<String> languages) {
-        Specification<User> specification = UserSpecification.combinedFilter(position, seniority, country, skill, languages);
-        return userRepository.findAll(specification);
+    public Page<User> searchUsers(List<String> position, List<String> seniority, List<String> country,
+                                  List<String> skill, List<String> languages, List<String> roles, Pageable pageable) {
+        Specification<User> specification = UserSpecification.combinedFilter(position, seniority, country, skill, languages, roles);
+        return userRepository.findAll(specification, pageable);
+    }
+
+
+    public User acceptUser(Integer userId, String role) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setStatus(statusRepository.findByName("ACCEPTED").orElseThrow(() -> new RuntimeException("Status not found")));
+        user.setRole(roleRepository.findByName(role).orElseThrow(() -> new RuntimeException("Role not found")));
+        return userRepository.save(user);
     }
 }

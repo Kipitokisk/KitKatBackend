@@ -30,6 +30,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        // Exclude specific paths from JWT authentication
+        String requestURI = request.getRequestURI();
+        if (isExcludedPath(requestURI)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // Process JWT authentication for other paths
         String token = getJwtFromRequest(request);
 
         if (token != null && jwtTokenUtil.validateToken(token)) {
@@ -45,6 +53,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    // Helper method to check excluded paths
+    private boolean isExcludedPath(String requestURI) {
+        // Add all paths that should not be processed by the JWT filter
+        return requestURI.equals("/api/login-otp");
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {

@@ -15,8 +15,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 @Slf4j
@@ -32,35 +30,37 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         try {
             OAuth2AuthenticationToken oauth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
             OAuth2User oauth2User = oauth2AuthenticationToken.getPrincipal();
 
             String email = (String) oauth2User.getAttributes().get("email");
 
-            // Fetch the user from the database
+            // Retrieve the user from the database
             User dbUser = userRepository.findUserByEmail(email);
+            if (dbUser == null) {
+                log.error("User not found after OAuth2 authentication for: {}", email);
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                return;
+            }
 
             // Generate JWT token for the user
             String jwt = jwtTokenUtil.generateToken(dbUser.getUserId().toString(), dbUser.getEmail(), dbUser.getRole().getName());
 
-            // Prepare the response data
-            Map<String, Object> res = new HashMap<>();
-            res.put("id", dbUser.getUserId());
-            res.put("email", dbUser.getEmail());
-            res.put("role", dbUser.getRole().getName());
-            res.put("jwt", jwt);
+            // Prepare the redirect URL with the JWT token as a parameter
+            String redirectUrl = "http://localhost:5173/dashboard"; // You can change this to your desired frontend URL
+            redirectUrl += "?jwt=" + jwt; // Append the JWT as a query parameter
 
-            // Set the response content type and write the JWT to the response body
-            response.setContentType("application/json");
-            response.getWriter().write(new ObjectMapper().writeValueAsString(res)); // Convert Map to JSON and write
-
+            // Log the successful login
             log.info("User logged in successfully: {}", email);
+
+            // Redirect to the frontend with the JWT token
+            response.sendRedirect(redirectUrl);
+
         } catch (IOException e) {
             log.error("Error writing response: {}", e.getMessage());
-            // Handle the error (e.g., send a specific error response)
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
-
 }

@@ -2,6 +2,7 @@ package com.pentalog.KitKat.Service;
 
 import com.pentalog.KitKat.Entities.User.JwtTokenUtil;
 import com.pentalog.KitKat.Entities.User.User;
+import com.pentalog.KitKat.Repository.RoleRepository;
 import com.pentalog.KitKat.Repository.StatusRepository;
 import com.pentalog.KitKat.Repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +28,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
     private final StatusRepository statusRepository;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public CustomOAuth2UserService(UserRepository userRepository, StatusRepository statusRepository) {
+    public CustomOAuth2UserService(UserRepository userRepository, StatusRepository statusRepository, JwtTokenUtil jwtTokenUtil, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.statusRepository = statusRepository;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -54,9 +59,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             dbUser.setEmail(email);
             dbUser.setFirstName(firstName);
             dbUser.setLastName(lastName);
+            dbUser.setRole(roleRepository.findByName("ROLE_USER").orElseThrow(() -> new RuntimeException("Role not found.")));
+            dbUser.setStatus(statusRepository.findByName("PENDING").orElseThrow(() -> new RuntimeException("Status not found")));
             dbUser.setOauthToken(oauthToken); // Store OAuth token
             userRepository.save(dbUser);
-
             log.info("New user registered: {}", email);
         } else {
             dbUser.setOauthToken(oauthToken); // Update OAuth token if user exists
@@ -65,8 +71,26 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             log.info("Existing user logged in: {}", email);
         }
 
-        // Return OAuth2User (no JWT generation here)
-        return oauthUser; // Spring Security will complete the authentication process here
+        String jwt = jwtTokenUtil.generateToken(dbUser.getUserId().toString(), dbUser.getEmail(), dbUser.getRole().getName());
+
+        // Prepare response data including JWT
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("id", dbUser.getUserId());
+        responseData.put("email", dbUser.getEmail());
+        responseData.put("role", dbUser.getRole().getName());
+        responseData.put("jwt", jwt);
+
+        // Set JWT as a custom attribute in OAuth2User
+        // This ensures the JWT is available to the OAuth2 authentication process
+        Map<String, Object> updatedAttributes = new HashMap<>(oauthUser.getAttributes());
+        updatedAttributes.put("jwt", jwt);
+
+        // Return a new OAuth2User instance with the updated attributes (including JWT)
+        return new DefaultOAuth2User(
+                Collections.singleton(new SimpleGrantedAuthority(dbUser.getRole().getName())),
+                updatedAttributes,
+                "email" // The default name attribute for OAuth2User (email in this case)
+        );
     }
 }
 

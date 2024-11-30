@@ -85,7 +85,7 @@ public class WorkersToManagerDashboardService {
                     worker.setSeniority(null);
                 }
                 else {
-                    worker.setSeniority(seniorityRepository.findById(user.getSeniority().getSeniortyId()).get().getName());
+                    worker.setSeniority(seniorityRepository.findById(user.getSeniority().getSeniorityId()).get().getName());
                 }
 
                 if(user.getPosition() == null){
@@ -181,7 +181,7 @@ public class WorkersToManagerDashboardService {
             worker.setSeniority(null);
         }
         else {
-            worker.setSeniority(seniorityRepository.findById(user.getSeniority().getSeniortyId()).get().getName());
+            worker.setSeniority(seniorityRepository.findById(user.getSeniority().getSeniorityId()).get().getName());
         }
 
         if(user.getPosition() == null){

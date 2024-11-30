@@ -2,6 +2,7 @@ package com.pentalog.KitKat.Entities.User;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pentalog.KitKat.Entities.*;
 import jakarta.persistence.*;
@@ -41,20 +42,19 @@ public class User {
     private City city;
     @ManyToMany
     @JoinTable(
-            name = "user_languages",
+            name = "t_user_languages",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "language_id")
     )
-    @JsonIgnore
     private List<Language> languages = new ArrayList<>(); // Store languages as a list
     @Column
     private BitSet cv;
     @ManyToOne()
     @JoinColumn(name = "project_id")
+    @JsonIgnoreProperties("workers")
     private Project project;
-    @OneToOne()
-    @JoinColumn(name = "skill_rating_id")
-    private SkillRating skillRating;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<SkillRating> skillRating = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
@@ -79,6 +79,7 @@ public class User {
         this.position = position;
         this.seniority = seniority;
         this.city = city;
+        this.skillRating = new ArrayList<>();
         this.languages = new ArrayList<>();
         this.cv = cv;
         this.role = role;
@@ -190,12 +191,8 @@ public class User {
         this.project = project;
     }
 
-    public SkillRating getSkillRating() {
+    public List<SkillRating> getSkillRating() {
         return skillRating;
-    }
-
-    public void setSkillInfo(SkillRating skillRating) {
-        this.skillRating = skillRating;
     }
 
     public Role getRole() {
@@ -215,7 +212,7 @@ public class User {
     }
 
     public void setSkillRating(SkillRating skillRating) {
-        this.skillRating = skillRating;
+        this.skillRating.add(skillRating);
     }
 
     public User getManagerId() {

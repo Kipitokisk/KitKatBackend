@@ -104,9 +104,7 @@ public class SkillRatingService {
 
             // Update the rating sum and number of reviews
             SkillRating skillRating = skillRatingOpt.get();
-            skillRating.setRatingSum(newRating);  // Replace this if you want to adjust how you handle new ratings
-            // Optionally increment the number of reviews
-            skillRating.setNrOfReviews(skillRating.getNrOfReviews() + 1); // Update number of reviews if needed
+            skillRating.updateRating(newRating);
 
             skillRatingRepository.save(skillRating);
             user.setSkillRating(skillRating);

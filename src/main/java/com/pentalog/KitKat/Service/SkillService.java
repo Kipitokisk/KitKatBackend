@@ -29,6 +29,7 @@ public class SkillService {
 
     public ResponseEntity<?> saveSkill(SkillDTO skillDTO) {
         log.debug("Saving skill: {}", skillDTO.getSkillName());
+
         try {
             // Check if the skill type exists
             Optional<SkillType> skillType = Optional.ofNullable(skillTypesRepository.findByName(skillDTO.getSkillType()));

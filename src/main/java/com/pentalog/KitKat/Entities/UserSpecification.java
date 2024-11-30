@@ -99,17 +99,33 @@ public class UserSpecification {
         };
     }
 
+    public static Specification<User> filterByRoleNames(List<String> roleNames) {
+        return (root, query, criteriaBuilder) -> {
+            if (roleNames == null || roleNames.isEmpty()) {
+                return criteriaBuilder.conjunction();
+            }
+            Join<User, Role> seniorityJoin = root.join("role");
+            CriteriaBuilder.In<String> inClause = criteriaBuilder.in(seniorityJoin.get("name")); // Use IN clause
+            for (String roleName : roleNames) {
+                inClause.value(roleName);
+            }
+            return inClause; // Return IN clause for seniority
+        };
+    }
+
 
     public static Specification<User> combinedFilter(
             List<String> positionNames,
             List<String> seniorityNames,
             List<String> countryNames,
             List<String> skillNames,
-            List<String> languageNames) {
+            List<String> languageNames,
+            List<String> roleNames) {
         return Specification.where(filterByPositionNames(positionNames))
                 .and(filterBySeniorityNames(seniorityNames))
                 .and(filterByCountryNames(countryNames))
                 .and(filterBySkillNames(skillNames))
-                .and(filterByLanguageNames(languageNames));
+                .and(filterByLanguageNames(languageNames))
+                .and(filterByRoleNames(roleNames));
     }
 }

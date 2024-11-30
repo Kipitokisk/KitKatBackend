@@ -79,7 +79,7 @@ public class SkillRating {
         this.nrOfReviews++;
 
         // Recalculate the average rating
-        this.ratingSum = ((this.ratingSum * (this.nrOfReviews - 1)) + newRating) / this.nrOfReviews;
+        this.ratingSum = (this.ratingSum + newRating) / this.nrOfReviews;
     }
 
     @Override
