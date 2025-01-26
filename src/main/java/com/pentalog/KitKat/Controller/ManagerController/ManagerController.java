@@ -3,6 +3,7 @@ package com.pentalog.KitKat.Controller.ManagerController;
 import com.pentalog.KitKat.DTO.CreateProjectDTO;
 import com.pentalog.KitKat.DTO.WorkerProjectDTO;
 import com.pentalog.KitKat.Entities.User.User;
+import com.pentalog.KitKat.Service.ExcelUtil;
 import com.pentalog.KitKat.Service.ProjectService;
 import com.pentalog.KitKat.Service.UserService;
 import com.pentalog.KitKat.Service.WorkersToManagerDashboardService;
@@ -10,10 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,5 +96,22 @@ public class ManagerController {
     @PostMapping("/save-project")
     public ResponseEntity<?> saveProject(@RequestBody CreateProjectDTO project) {
         return projectService.saveProject(project);
+    }
+
+    @GetMapping("/excel/export")
+    public ResponseEntity<byte[]> exportExcel() {
+        try {
+            List<User> users = userService.getAllUsers();
+            ByteArrayOutputStream outputStream = ExcelUtil.exportUsersToExcel(users);
+
+            // Set response headers for Excel file download
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Disposition", "attachment; filename=users.xlsx");
+            headers.add("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+            return new ResponseEntity<>(outputStream.toByteArray(), headers, HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
