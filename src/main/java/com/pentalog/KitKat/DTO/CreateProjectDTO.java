@@ -6,11 +6,14 @@ public class CreateProjectDTO {
     private String projectName;
     private Integer managerId;
     private LocalDateTime finishDate;
+    private String description;
+
     public CreateProjectDTO() {}
-    public CreateProjectDTO(String projectName, Integer managerId, LocalDateTime finishDate) {
+    public CreateProjectDTO(String projectName, Integer managerId, LocalDateTime finishDate, String description) {
         this.projectName = projectName;
         this.managerId = managerId;
         this.finishDate = finishDate;
+        this.description = description;
     }
 
     public String getProjectName() {
@@ -35,5 +38,13 @@ public class CreateProjectDTO {
 
     public void setFinishDate(LocalDateTime finishDate) {
         this.finishDate = finishDate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -44,6 +44,7 @@ public class ProjectService {
             project.setStartDate(LocalDateTime.now());
             project.setManager(userRepository.findById(createProjectDTO.getManagerId()).orElse(null));
             project.setStatus(true);
+            project.setDescription(createProjectDTO.getDescription());
             projectRepository.save(project);
             log.info("Project added: {}", project.getProjectName());
             return ResponseEntity.ok(project);
@@ -57,55 +58,66 @@ public class ProjectService {
         }
     }
 
-    public List<ProjectDTO> getProjects() {
-        List<Project> projects = projectRepository.findAll();
-        List<ProjectDTO> projectDTOs = new ArrayList<>();
-        for (Project project : projects) {
-            ProjectDTO projectDTO = new ProjectDTO();
-
-            projectDTO.setProjectID(project.getProjectId());
-
-            if(project.getProjectName() != null) {
-                projectDTO.setProjectName(project.getProjectName());
-            }
-            else{
-                projectDTO.setProjectName(null);
-            }
-
-            if(project.getManager() != null) {
-                projectDTO.setManager(userRepository.findById(project.getManager().getUserId()).get().getFirstName() +
-                        " " + userRepository.findById(project.getManager().getUserId()).get().getLastName());
-            }
-            else{
-                projectDTO.setManager(null);
-            }
-
-            if(project.getStartDate() != null) {
-                projectDTO.setStartDate(project.getStartDate());
-            }
-            else{
-                projectDTO.setStartDate(null);
-            }
-
-            if(project.getFinishDate() != null) {
-                projectDTO.setFinishDate(project.getFinishDate());
-            }
-            else{
-                projectDTO.setFinishDate(null);
-            }
-
-            if(project.getStatus() != null) {
-                projectDTO.setStatus(project.getStatus());
-            }
-            else{
-                projectDTO.setStatus(null);
-            }
-
-            projectDTOs.add(projectDTO);
-        }
-
-        return projectDTOs;
+    public List<Project> getProjects() {
+        return this.projectRepository.findAll();
     }
+
+//    public List<ProjectDTO> getProjects() {
+//        List<Project> projects = projectRepository.findAll();
+//        List<ProjectDTO> projectDTOs = new ArrayList<>();
+//        for (Project project : projects) {
+//            ProjectDTO projectDTO = new ProjectDTO();
+//
+//            projectDTO.setProjectID(project.getProjectId());
+//
+//            if(project.getProjectName() != null) {
+//                projectDTO.setProjectName(project.getProjectName());
+//            }
+//            else{
+//                projectDTO.setProjectName(null);
+//            }
+//
+//            if(project.getManager() != null) {
+//                projectDTO.setManager(userRepository.findById(project.getManager().getUserId()).get().getFirstName() +
+//                        " " + userRepository.findById(project.getManager().getUserId()).get().getLastName());
+//            }
+//            else{
+//                projectDTO.setManager(null);
+//            }
+//
+//            if(project.getStartDate() != null) {
+//                projectDTO.setStartDate(project.getStartDate());
+//            }
+//            else{
+//                projectDTO.setStartDate(null);
+//            }
+//
+//            if(project.getFinishDate() != null) {
+//                projectDTO.setFinishDate(project.getFinishDate());
+//            }
+//            else{
+//                projectDTO.setFinishDate(null);
+//            }
+//
+//            if(project.getStatus() != null) {
+//                projectDTO.setStatus(project.getStatus());
+//            }
+//            else{
+//                projectDTO.setStatus(null);
+//            }
+//
+//            if (project.getDescription() != null) {
+//                projectDTO.setDescription(project.getDescription());
+//            }
+//            else {
+//                projectDTO.setDescription(null);
+//            }
+//
+//            projectDTOs.add(projectDTO);
+//        }
+//
+//        return projectDTOs;
+//    }
 
     public ResponseEntity<?> setProject(Integer userId, Integer projectId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
