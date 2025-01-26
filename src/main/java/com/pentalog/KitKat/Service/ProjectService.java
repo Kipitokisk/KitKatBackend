@@ -44,6 +44,7 @@ public class ProjectService {
             project.setStartDate(LocalDateTime.now());
             project.setManager(userRepository.findById(createProjectDTO.getManagerId()).orElse(null));
             project.setStatus(true);
+            project.setDescription(createProjectDTO.getDescription());
             projectRepository.save(project);
             log.info("Project added: {}", project.getProjectName());
             return ResponseEntity.ok(project);
@@ -99,6 +100,13 @@ public class ProjectService {
             }
             else{
                 projectDTO.setStatus(null);
+            }
+
+            if (project.getDescription() != null) {
+                projectDTO.setDescription(project.getDescription());
+            }
+            else {
+                projectDTO.setDescription(null);
             }
 
             projectDTOs.add(projectDTO);

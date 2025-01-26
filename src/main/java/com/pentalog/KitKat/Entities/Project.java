@@ -29,15 +29,18 @@ public class Project {
     private Boolean status;
     @OneToMany(mappedBy = "project")
     private List<User> workers = new ArrayList<>();
+    @Column
+    private String description;
 
     public Project() {
     }
 
-    public Project(String projectName, User manager, LocalDateTime startDate, Boolean status) {
+    public Project(String projectName, User manager, LocalDateTime startDate, Boolean status, String description) {
         this.projectName = projectName;
         this.manager = manager;
         this.startDate = startDate;
         this.status = status;
+        this.description = description;
     }
 
     public Integer getProjectId() {
@@ -96,6 +99,14 @@ public class Project {
         this.workers = workers;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "Project{" +
@@ -106,6 +117,7 @@ public class Project {
                 ", finishDate=" + finishDate +
                 ", status=" + status +
                 ", workers=" + workers +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

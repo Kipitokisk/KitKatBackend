@@ -11,6 +11,7 @@ public class ProjectDTO {
     private LocalDateTime startDate;
     private LocalDateTime finishDate;
     private Boolean status;
+    private String description;
 
     public ProjectDTO() {
     }
@@ -61,5 +62,13 @@ public class ProjectDTO {
 
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
