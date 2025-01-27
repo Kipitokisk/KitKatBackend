@@ -114,4 +114,10 @@ public class ManagerController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/worker/project/{id}")
+    public ResponseEntity<?> getProjectById(@PathVariable("id") Integer id) {
+        log.info("Received request to find user by id: {}", id);
+        return ResponseEntity.ok(projectService.getProject(id));
+    }
 }

@@ -1,8 +1,6 @@
 package com.pentalog.KitKat.Service;
 
 import com.pentalog.KitKat.DTO.CreateProjectDTO;
-import com.pentalog.KitKat.DTO.ProjectDTO;
-import com.pentalog.KitKat.Entities.Language;
 import com.pentalog.KitKat.Entities.Project;
 import com.pentalog.KitKat.Entities.User.User;
 import com.pentalog.KitKat.Repository.ProjectRepository;
@@ -60,6 +58,10 @@ public class ProjectService {
 
     public List<Project> getProjects() {
         return this.projectRepository.findAll();
+    }
+
+    public Optional<Project> getProject(Integer id) {
+        return this.projectRepository.findById(id);
     }
 
 //    public List<ProjectDTO> getProjects() {
