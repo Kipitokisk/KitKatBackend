@@ -236,7 +236,8 @@ This endpoint allows a MANAGER to create a project.
 {
   "projectName": "Kitkat",
   "managerId": 2,
-  "finishDate": "2024-01-01T22:22:22"
+  "finishDate": "2024-01-01T22:22:22",
+  "description": "description"
 } 
 ```
 ##### Request
@@ -248,7 +249,8 @@ curl --location 'http://localhost:8080/manager/save-project' \
 --data '{
     "projectName": "Kitkat",
     "managerId": 2,
-    "finishDate": "2024-01-01T22:22:22"
+    "finishDate": "2024-01-01T22:22:22",
+    "description": "description"
 }'
 ```
 ##### Response
@@ -312,6 +314,16 @@ curl --location 'http://localhost:8080/manager/save-project' \
     },
     "startDate": "2024-11-28T20:07:55.009480382",
     "finishDate": "2024-01-01T22:22:22",
-    "status": true
+    "status": true,
+    "description": "description"
 }
+```
+
+#### _Export Excel_
+##### Description
+This endpoint returns an Excel file. In postman, you must save the response while in web, it automatically downloads.
+##### Request
+```Curl
+curl --location 'http://localhost:8080/manager/excel/export' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwiZW1haWwiOiJ2aWN0b3IucmV2ZW5vYy4wMEBnbWFpbC5jb20iLCJyb2xlIjoiUk9MRV9NQU5BR0VSIiwiaWF0IjoxNzM3OTA5OTYwLCJleHAiOjE3MzgxNjkxNjB9.eOU5VnpGL4lZTX--hTL0pR4hFwuFLaqpvuMtvDqoEpM'
 ```
