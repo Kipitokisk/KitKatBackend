@@ -49,11 +49,11 @@ public class DataSeeder implements CommandLineRunner {
             if (isTableEmpty(connection, "t_skills")) {
                 ScriptUtils.executeSqlScript(connection, new ClassPathResource("insert_skills.sql"));
             }
-            if (isTableEmpty(connection, "t_users")) {
-                ScriptUtils.executeSqlScript(connection, new ClassPathResource("insert_users.sql"));
-            }
             if (isTableEmpty(connection, "t_projects")) {
                 ScriptUtils.executeSqlScript(connection, new ClassPathResource("insert_projects.sql"));
+            }
+            if (isTableEmpty(connection, "t_users")) {
+                ScriptUtils.executeSqlScript(connection, new ClassPathResource("insert_users.sql"));
             }
             if (isTableEmpty(connection, "t_user_languages")) {
                 ScriptUtils.executeSqlScript(connection, new ClassPathResource("insert_user_languages.sql"));
