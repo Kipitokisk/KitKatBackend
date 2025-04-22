@@ -1,5 +1,8 @@
 package com.pentalog.KitKat.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.pentalog.KitKat.Entities.User.User;
 import jakarta.persistence.*;
 
 @Entity
@@ -8,10 +11,11 @@ public class SkillRating {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer skillRatingId;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "skill_id")
     private Skill skill;
     @Column
@@ -68,6 +72,14 @@ public class SkillRating {
 
     public void setNrOfReviews(Integer nrOfReviews) {
         this.nrOfReviews = nrOfReviews;
+    }
+
+    public void updateRating(Integer newRating) {
+        // Update the number of reviews
+        this.nrOfReviews++;
+
+        // Recalculate the average rating
+        this.ratingSum = (this.ratingSum + newRating) / this.nrOfReviews;
     }
 
     @Override

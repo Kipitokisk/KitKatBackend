@@ -1,7 +1,14 @@
-package com.pentalog.KitKat.Entities;
+package com.pentalog.KitKat.Entities.User;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.pentalog.KitKat.Entities.*;
 import jakarta.persistence.*;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
@@ -19,41 +26,51 @@ public class User {
     private String firstName;
     @Column
     private String lastName;
+    @NotNull
     @Column(unique = true)
     private String email;
     @Column
     private BitSet password;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "position_id")
     private Position position;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "seniority_id")
     private Seniority seniority;
-    @Column
-    private String country;
-    @Column
-    private String city;
-    @Column
-    private String languagesId;
+    @ManyToOne
+    @JoinColumn(name = "city_id")
+    private City city;
+    @ManyToMany
+    @JoinTable(
+            name = "t_user_languages",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "language_id")
+    )
+    private List<Language> languages = new ArrayList<>(); // Store languages as a list
     @Column
     private BitSet cv;
-    @OneToOne()
+    @ManyToOne()
     @JoinColumn(name = "project_id")
+    @JsonIgnoreProperties("workers")
     private Project project;
-    @OneToOne()
-    @JoinColumn(name = "skill_rating_id")
-    private SkillRating skillRating;
-    @OneToOne
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<SkillRating> skillRating = new ArrayList<>();
+    @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "status_id")
     private Status status;
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
+    private User managerId;
+    @Column
+    private String oauthToken;
 
     public User() {
     }
 
-    public User(BitSet avatar, String firstName, String lastName, String email, BitSet password, Position position, Seniority seniority, String country, String city, String languagesId, BitSet cv, Role role) {
+    public User(BitSet avatar, String firstName, String lastName, String email, BitSet password, Position position, Seniority seniority, City city, BitSet cv, Role role) {
         this.avatar = avatar;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -61,12 +78,14 @@ public class User {
         this.password = password;
         this.position = position;
         this.seniority = seniority;
-        this.country = country;
         this.city = city;
-        this.languagesId = languagesId;
+        this.skillRating = new ArrayList<>();
+        this.languages = new ArrayList<>();
         this.cv = cv;
         this.role = role;
     }
+
+
 
     public Integer getUserId() {
         return userId;
@@ -132,28 +151,28 @@ public class User {
         this.seniority = seniority;
     }
 
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
-    public String getLanguagesId() {
-        return languagesId;
+    public List<Language> getLanguages() {
+        return languages;
     }
 
-    public void setLanguagesId(String languagesId) {
-        this.languagesId = languagesId;
+    public void setLanguages(List<Language> languages) {
+        this.languages = languages;
+    }
+
+    public void addLanguage(Language language) {
+        this.languages.add(language);
+    }
+
+    public void removeLanguage(Language language) {
+        this.languages.remove(language);
     }
 
     public BitSet getCv() {
@@ -172,12 +191,8 @@ public class User {
         this.project = project;
     }
 
-    public SkillRating getSkillRating() {
+    public List<SkillRating> getSkillRating() {
         return skillRating;
-    }
-
-    public void setSkillInfo(SkillRating skillRating) {
-        this.skillRating = skillRating;
     }
 
     public Role getRole() {
@@ -196,17 +211,24 @@ public class User {
         this.status = status;
     }
 
-    // Helper methods to convert the comma-separated string to a List of Integers
-    public List getLanguageIdList() {
-        return Arrays.stream(this.languagesId.split(","))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+    public void setSkillRating(SkillRating skillRating) {
+        this.skillRating.add(skillRating);
     }
 
-    public void setLanguageIdList(List<Integer> languageIdList) {
-        this.languagesId = languageIdList.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(","));
+    public User getManagerId() {
+        return managerId;
+    }
+
+    public void setManagerId(User managerId) {
+        this.managerId = managerId;
+    }
+
+    public String getOauthToken() {
+        return oauthToken;
+    }
+
+    public void setOauthToken(String oauthToken) {
+        this.oauthToken = oauthToken;
     }
 
     @Override
@@ -220,14 +242,14 @@ public class User {
                 ", password=" + password +
                 ", position=" + position +
                 ", seniority=" + seniority +
-                ", country='" + country + '\'' +
-                ", city='" + city + '\'' +
-                ", languagesId='" + languagesId + '\'' +
+                ", city=" + city +
+                ", languages='" + languages + '\'' +
                 ", cv=" + cv +
                 ", project=" + project +
                 ", skillRating=" + skillRating +
                 ", role=" + role +
                 ", status=" + status +
+                ", managerId=" + managerId +
                 '}';
     }
 }
